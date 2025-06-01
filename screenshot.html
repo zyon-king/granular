@@ -22,19 +22,50 @@
   <button id="capturar-btn">Capturar Tela</button>
   <div id="screenshot-container"></div>
 
-  <script src="https://unpkg.com/html2canvas@1.0.0-rc.7/dist/html2canvas.min.js"></script>
   <script>
+          /**
+         * Agora vc pode selecionar a aba.
+         * Esse código aguarda o vídeo carregar e então espera por 5 segundos antes de capturar a imagem.
+         **/
     const capturarBtn = document.getElementById('capturar-btn');
     const screenshotContainer = document.getElementById('screenshot-container');
 
     capturarBtn.addEventListener('click', capturarTela);
 
-    function capturarTela() {
-      html2canvas(document.body).then(canvas => {
+    async function capturarTela() {
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: true
+        });
+
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        video.play();
+
+        await new Promise(resolve => {
+          video.onloadedmetadata = () => {
+            resolve();
+          };
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = stream.getVideoTracks()[0].getSettings().width;
+        canvas.height = stream.getVideoTracks()[0].getSettings().height;
+        const ctx = canvas.getContext('2d');
+
+        // Aguarde um pouco para garantir que o vídeo esteja sendo exibido
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
         const imgData = canvas.toDataURL('image/png');
-        localStorage.setItem('screenshot', imgData);
         exibirScreenshot(imgData);
-      });
+
+        // Parar a transmissão
+        stream.getTracks().forEach(track => track.stop());
+      } catch (error) {
+        console.error('Erro ao capturar a tela:', error);
+      }
     }
 
     function exibirScreenshot(imgData) {
@@ -43,13 +74,6 @@
       screenshotContainer.innerHTML = '';
       screenshotContainer.appendChild(img);
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      const storedImg = localStorage.getItem('screenshot');
-      if (storedImg) {
-        exibirScreenshot(storedImg);
-      }
-    });
   </script>
 </body>
 </html>
