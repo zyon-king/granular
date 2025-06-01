@@ -165,52 +165,54 @@
         
         // Inicio do bloco de teste
         // Função para verificar condições antes de solicitar permissão
-		function verificarCondicoes() {
-		  if (!isNotificationSupported()) {
-		    alert("Seu navegador não suporta notificações.");
-		    return false;
-		  }
-		
-		  if (isIncognitoMode()) {
-		    alert("Notificações não funcionam no modo anônimo.");
-		    return false;
-		  }
-		
-		  if (isPermissionDenied()) {
-		    alert("Permissão já foi negada anteriormente. Você não receberá notificações.");
-		    return false;
-		  }
-		
-		  if (isPermissionGranted()) {
-		    setTimeout(() => {
-		      new Notification('Notificação!', {
-		        body: 'Essa é uma notificação simples!',
-		        icon: 'https://picsum.photos/48/48'
-		      });
-		    }, 5000); // 5 segundos
-		    return false;
-		  }
-		
-		  return true;
-		}
-		
-		btnNotificacao.addEventListener('click', () => {
-		  if (verificarCondicoes()) {
-		    Notification.requestPermission().then(permission => {
-		      if (permission === 'granted') {
-		        setTimeout(() => {
-		          new Notification('Notificação!', {
-		            body: 'Essa é uma notificação simples!',
-		            icon: 'https://picsum.photos/48/48'
-		          });
-		        }, 5000); // 5 segundos
-		      } else {
-		        alert('Permissão negada!');
-		      }
-		    });
-		  }
-		});
-        // Fim do bloco de teste
+	const btnNotificacao = document.getElementById('btn-notificacao');
+	    
+	function verificarCondicoes() {
+	  if (!isNotificationSupported()) {
+	    alert("Seu navegador não suporta notificações.");
+	    return false;
+	  }
+	
+	  if (isIncognitoMode()) {
+	    alert("Notificações não funcionam no modo anônimo.");
+	    return false;
+	  }
+	
+	  if (isPermissionDenied()) {
+	    alert("Permissão já foi negada anteriormente. Você não receberá notificações.");
+	    return false;
+	  }
+	
+	  if (isPermissionGranted()) {
+	    setTimeout(() => {
+	      new Notification('Notificação!', {
+	        body: 'Essa é uma notificação simples!',
+	        icon: 'https://picsum.photos/48/48'
+	      });
+	    }, 5000); // 5 segundos
+	    return false;
+	  }
+	
+	  return true;
+	}
+	
+	btnNotificacao.addEventListener('click', () => {
+	  if (verificarCondicoes()) {
+	    Notification.requestPermission().then(permission => {
+	      if (permission === 'granted') {
+	        setTimeout(() => {
+	          new Notification('Notificação!', {
+	            body: 'Essa é uma notificação simples!',
+	            icon: 'https://picsum.photos/48/48'
+	          });
+	        }, 5000); // 5 segundos
+	      } else {
+	        alert('Permissão negada!');
+	      }
+	    });
+	  }
+	});
+       // Fim do bloco de teste
         
     </script>
 </body>
