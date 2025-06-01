@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Captura de Tela</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #screenshot-container {
+      margin-top: 20px;
+    }
+    #screenshot-container img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Captura de Tela</h1>
+  <button id="capturar-btn">Capturar Tela</button>
+  <div id="screenshot-container"></div>
+
+  <script src="https://unpkg.com/html2canvas@1.0.0-rc.7/dist/html2canvas.min.js"></script>
+  <script>
+    const capturarBtn = document.getElementById('capturar-btn');
+    const screenshotContainer = document.getElementById('screenshot-container');
+
+    capturarBtn.addEventListener('click', capturarTela);
+
+    function capturarTela() {
+      html2canvas(document.body).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        localStorage.setItem('screenshot', imgData);
+        exibirScreenshot(imgData);
+      });
+    }
+
+    function exibirScreenshot(imgData) {
+      const img = document.createElement('img');
+      img.src = imgData;
+      screenshotContainer.innerHTML = '';
+      screenshotContainer.appendChild(img);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const storedImg = localStorage.getItem('screenshot');
+      if (storedImg) {
+        exibirScreenshot(storedImg);
+      }
+    });
+  </script>
+</body>
+</html>
