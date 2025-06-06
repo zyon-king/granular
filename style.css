@@ -1,0 +1,156 @@
+/* style.css */
+
+body {
+    text-align: center;
+    background: #3f0b48;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.alert {
+    position: relative;
+    z-index: 10000;
+    text-align: center;
+    padding: 20px;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.error {
+    background-color: #f8d7da;
+    color: #d63384;
+    border: 1px solid #f5c2c7;
+}
+
+.success {
+    background-color: #ADD8E6;
+    color: #000;
+}
+
+/* Estilos para popups customizados */
+
+#customPopup {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popup-content {
+    background-color: white;
+    margin: 50px auto 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    top: 20px;
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.popup-content.success {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.popup-content.error {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+}
+
+.popup-content.confirm {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+.popup-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.popup-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.popup-content.confirm .popup-title {
+    color: #333;
+}
+
+.popup-message {
+    font-size: 30px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+    color: white;
+}
+
+.popup-content.confirm .popup-message {
+    color: #555;
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.popup-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    min-width: 100px;
+}
+
+.popup-btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.popup-btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.popup-btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.popup-btn-secondary:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+}
+
+.popup-btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.popup-btn-success:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
