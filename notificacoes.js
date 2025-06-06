@@ -41,6 +41,23 @@ function showInitialMessage() {
     showConfirm("Por favor, permita as notificações para não perder alertas importantes!");
 }
 
+// Adicionar evento de clique ao botão de teste
+document.addEventListener('DOMContentLoaded', function() {
+    const botaoTeste = document.getElementById('teste-notificacao');
+    if (botaoTeste) {
+        botaoTeste.addEventListener('click', () => {
+            if (isPermissionGranted()) {
+                new Notification('Notificação de teste', {
+                    body: 'Essa é uma notificação de teste!',
+                    // icon: 'icone.png' // opcional
+                });
+            } else {
+                showError("Permissão para notificações não foi concedida.");
+            }
+        });
+    }
+});
+
 /**
  * Verifica se o navegador suporta notificações.
  * @returns {boolean} True se o navegador suporta notificações, false caso contrário.
