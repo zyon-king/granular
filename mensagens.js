@@ -17,6 +17,13 @@ function showCustomPopup(type, icon, title, message, buttons) {
   }
   popup.appendChild(content);
 
+  if (icon) {
+    const iconEl = document.createElement('span');
+    iconEl.classList.add('popup-icon');
+    iconEl.innerHTML = icon;
+    content.appendChild(iconEl);
+  }
+
   const titleEl = document.createElement('h2');
   titleEl.textContent = title;
   content.appendChild(titleEl);
@@ -43,8 +50,18 @@ function showCustomPopup(type, icon, title, message, buttons) {
       buttonsEl.appendChild(buttonEl);
     });
   } else {
-      console.error('O parâmetro buttons deve ser um array.');
+    console.error('O parâmetro buttons deve ser um array.');
   }
+
+  // Permitir que os popups sejam fechados clicando fora
+  popup.addEventListener('click', (e) => {
+    if (e.target === popup) {
+      popup.remove();
+    }
+  });
+
+  document.body.appendChild(popup);
+}
 
 /**
  * Três tipos de mensagens (erro, confirmação e sucesso), 
