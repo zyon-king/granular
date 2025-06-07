@@ -29,21 +29,22 @@ function showCustomPopup(type, icon, title, message, buttons) {
   buttonsEl.classList.add('popup-buttons');
   content.appendChild(buttonsEl);
 
-  buttons.forEach(button => {
-    const buttonEl = document.createElement('button');
-    buttonEl.textContent = button.text;
-    buttonEl.classList.add(button.class);
-    buttonEl.addEventListener('click', () => {
-      if (button.callback) {
-        button.callback();
-      }
-      popup.remove();
+  if (Array.isArray(buttons)) {
+    buttons.forEach(button => {
+      const buttonEl = document.createElement('button');
+      buttonEl.textContent = button.text;
+      buttonEl.classList.add(button.class);
+      buttonEl.addEventListener('click', () => {
+        if (button.callback) {
+          button.callback();
+        }
+        popup.remove();
+      });
+      buttonsEl.appendChild(buttonEl);
     });
-    buttonsEl.appendChild(buttonEl);
-  });
-
-  document.body.appendChild(popup);
-}
+  } else {
+      console.error('O parâmetro buttons deve ser um array.');
+  }
 
 /**
  * Três tipos de mensagens (erro, confirmação e sucesso), 
@@ -57,6 +58,10 @@ function showError(message) {
 }
 
 function showConfirmation(message, callbackSim, callbackNao) {
+  if (typeof callbackSim !== 'function' || typeof callbackNao !== 'function') {
+    console.error('Os parâmetros callbackSim e callbackNao devem ser funções.');
+    return;
+  }
   showCustomPopup('confirmation', '', 'Confirmação', message, [
     { text: 'Sim', class: 'popup-btn popup-btn-confirmation', callback: callbackSim },
     { text: 'Não', class: 'popup-btn popup-btn-confirmation', callback: callbackNao }
