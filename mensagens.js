@@ -8,12 +8,14 @@ function showCustomPopup(type, icon, title, message, buttons) {
   popup.classList.add('popup');
 
   const content = document.createElement('div');
-  content.classList.add('popup-content');
+  if (type === 'error') {
+    content.classList.add('popup-content', 'error');
+  } else if (type === 'confirmation') {
+    content.classList.add('popup-content', 'confirm');
+  } else {
+    content.classList.add('popup-content', 'success');
+  }
   popup.appendChild(content);
-
-  const iconEl = document.createElement('span');
-  iconEl.textContent = icon;
-  content.appendChild(iconEl);
 
   const titleEl = document.createElement('h2');
   titleEl.textContent = title;
