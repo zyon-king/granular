@@ -1,3 +1,11 @@
+/*<body>
+	<div id='test-buttons'>
+		<button id="testar-sucesso">Testar Sucesso</button>
+		<button id="testar-confirmacao">Testar Confirmação</button>
+		<button id="testar-erro">Testar Erro</button>
+	</div>
+
+<script>*/
 /**
  * Criar os elementos HTML do popup dinamicamente 
  * dentro da função showCustomPopup usando JavaScript. 
@@ -31,24 +39,33 @@
           const buttonsEl = document.createElement('div');
           buttonsEl.classList.add('popup-buttons');
           content.appendChild(buttonsEl);
-          buttons.forEach(button => {
-              const buttonEl = document.createElement('button');
-              buttonEl.textContent = button.text;
-              buttonEl.classList.add('popup-btn', 'popup-btn-primary');
-              buttonEl.addEventListener('click', () => {
-                  if (button.callback) {
-                      button.callback();
-                  }
-                  popup.remove();
-              });
-              buttonsEl.appendChild(buttonEl);
-          });
-           
-        // Permitir que os popups sejam fechados clicando fora
-		popup.addEventListener('click', (e) => {
-		    if (e.target === popup) {
-		      popup.remove();
-		    }
+          
+		  // Adicionar evento de clique nos botões
+		  buttons.forEach(button => {
+		      const buttonEl = document.createElement('button');
+		      buttonEl.textContent = button.text;
+		      buttonEl.classList.add('popup-btn', 'popup-btn-primary');
+		      buttonEl.addEventListener('click', () => {
+		          if (button.callback) {
+		              button.callback();
+		          }
+		          // Adicionar classe fade-out e remover o popup após a animação
+		          popup.classList.add('fade-out');
+		          setTimeout(() => {
+		              popup.remove();
+		          }, 500); // tempo da animação em milissegundos
+		      });
+		      buttonsEl.appendChild(buttonEl);
+		  });
+		  
+		  // Permitir que os popups sejam fechados clicando fora
+		  popup.addEventListener('click', (e) => {
+		      if (e.target === popup) {
+		          popup.classList.add('fade-out');
+		          setTimeout(() => {
+		              popup.remove();
+		          }, 500); // tempo da animação em milissegundos
+		      }
 		  });
 		
 		  document.body.appendChild(popup);
@@ -86,3 +103,6 @@
         document.getElementById('testar-erro').addEventListener('click', function() {
 		    showError("Ocorreu um erro!");
 		});
+        
+/*</script>
+</body>*/
