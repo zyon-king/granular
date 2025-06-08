@@ -1,4 +1,5 @@
-/* style.css */
+    /*</style>*/
+    /* style.css */
 
 body {
     text-align: center;
@@ -87,3 +88,10 @@ body {
             background-color: #007bff;
             color: white;
         }
+        
+        .fade-out {
+		  opacity: 0;
+		  transition: opacity 0.5s;
+		}
+    
+    /*</style>*/
