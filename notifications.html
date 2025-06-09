@@ -3,6 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popups</title>
+    <style>
+        body {
+            background: #f2f2f2;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #test-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        #test-buttons button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            background-color: #007bff;
+            color: white;
+        }
+
+        #test-buttons button:hover {
+            background-color: #0056b3;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Garante que o popup fique acima de outros elementos */
+        }
+
+        @keyframes popupSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .popup-content {
+            animation: popupSlideIn 0.3s ease-in-out forwards; /* Adicionado forwards para manter o estado final */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            color: #333; /* Cor do texto padrão */
+        }
+
+        .popup-content h2 {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .popup-content p {
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .popup-content.error {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white; /* Texto branco para contraste */
+        }
+
+        .popup-content.success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white; /* Texto branco para contraste */
+        }
+
+        .popup-content.confirm {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333; /* Texto escuro para contraste */
+        }
+
+        .popup-icon {
+            font-size: 48px; /* Ajuste o tamanho do ícone */
+            margin-bottom: 10px;
+            display: block; /* Garante que o ícone ocupe sua própria linha */
+        }
+
+        .popup-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap; /* Permite que os botões quebrem a linha em telas menores */
+        }
+
+        .popup-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            min-width: 100px;
+            flex-grow: 1; /* Permite que os botões se expandam */
+            max-width: 150px; /* Limita o tamanho máximo do botão */
+        }
+
+        /* Cores dos botões dentro dos popups */
+        .popup-content.success .popup-btn-primary {
+            background-color: white;
+            color: #4facfe;
+        }
+
+        .popup-content.error .popup-btn-primary {
+            background-color: white;
+            color: #ff6b6b;
+        }
+        
+        .popup-content.confirm .popup-btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .popup-btn:hover {
+            opacity: 0.8;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div id='test-buttons'>
+        <button id="testar-sucesso">Testar Sucesso</button>
+        <button id="testar-confirmacao">Testar Confirmação</button>
+        <button id="testar-erro">Testar Erro</button>
+    </div>
+
+    <script>
+        /**
+         * Criar os elementos HTML do popup dinamicamente
+         * dentro da função showCustomPopup usando JavaScript.
+         * Podendo ser útil para incluir o HTML do popup em todas as páginas.
+         */
+        function showCustomPopup(type, icon, title, message, buttons) {
+            const popup = document.createElement('div');
+            popup.classList.add('popup');
+
+            const content = document.createElement('div');
+            // Aplica as classes de tipo (error, success, confirm)
+            if (type === 'error') {
+                content.classList.add('popup-content', 'error');
+            } else if (type === 'confirmation') {
+                content.classList.add('popup-content', 'confirm');
+            } else { // default to success
+                content.classList.add('popup-content', 'success');
+            }
+            
+            popup.appendChild(content);
+
+            if (icon) {
+                const iconEl = document.createElement('span');
+                iconEl.classList.add('popup-icon');
+                iconEl.innerHTML = icon;
+                content.appendChild(iconEl);
+            }
+
+            const titleEl = document.createElement('h2');
+            titleEl.textContent = title;
+            content.appendChild(titleEl);
+
+            const messageEl = document.createElement('p');
+            messageEl.textContent = message;
+            content.appendChild(messageEl);
+
+            const buttonsEl = document.createElement('div');
+            buttonsEl.classList.add('popup-buttons');
+            content.appendChild(buttonsEl);
+
+            buttons.forEach(button => {
+                const buttonEl = document.createElement('button');
+                buttonEl.textContent = button.text;
+                // Os botões agora sempre terão a classe 'popup-btn' e 'popup-btn-primary'
+                // A cor do botão será definida pelo CSS com base no tipo de popup
+                buttonEl.classList.add('popup-btn', 'popup-btn-primary'); 
+                buttonEl.addEventListener('click', () => {
+                    if (button.callback) {
+                        button.callback();
+                    }
+                    popup.classList.add('fade-out');
+                    setTimeout(() => {
+                        popup.remove();
+                    }, 500);
+                });
+                buttonsEl.appendChild(buttonEl);
+            });
+
+            // Permitir que os popups sejam fechados clicando fora
+            popup.addEventListener('click', (e) => {
+                // Verifica se o clique foi diretamente no overlay do popup, e não no conteúdo
+                if (e.target === popup) { 
+                    popup.classList.add('fade-out');
+                    setTimeout(() => {
+                        popup.remove();
+                    }, 500);
+                }
+            });
+
+            document.body.appendChild(popup);
+        }
+
+        function showConfirm(message, callbackSim, callbackNao) {
+            showCustomPopup('confirmation', '❓', 'Confirmação', message, [
+                { text: 'Sim', callback: callbackSim },
+                { text: 'Não', callback: callbackNao }
+            ]);
+        }
+
+        function showSuccess(message) {
+            showCustomPopup('success', '✅', 'Sucesso', message, [
+                { text: 'OK', callback: null } // Callback nulo para apenas fechar
+            ]);
+        }
+
+        function showError(message) {
+            showCustomPopup('error', '❌', 'Erro', message, [
+                { text: 'OK', callback: null } // Callback nulo para apenas fechar
+            ]);
+        }
+
+        // Testes
+        document.getElementById('testar-sucesso').addEventListener('click', function() {
+            showSuccess("Ação realizada com sucesso!");
+        });
+
+        document.getElementById('testar-confirmacao').addEventListener('click', function() {
+            showConfirm("Você vê uma mensagem de Confirmação?",
+            function() {
+                showSuccess("Você clicou em Sim!");
+            },
+            function() {
+                showError("Você clicou em Não!");
+            });
+        });
+
+        document.getElementById('testar-erro').addEventListener('click', function() {
+            showError("Ocorreu um erro!");
+        });
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solicitar Permissão para Notificações</title>
     <style>
         body {
