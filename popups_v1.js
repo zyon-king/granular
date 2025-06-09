@@ -1,7 +1,9 @@
+ /**
  * Criar os elementos HTML do popup dinamicamente
  * dentro da função showCustomPopup usando JavaScript.
  * Podendo ser útil para incluir o HTML do popup em todas as páginas.
  */
+
 function showCustomPopup(type, icon, title, message, buttons) {
   const popup = document.createElement('div');
   popup.classList.add('popup');
