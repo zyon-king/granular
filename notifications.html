@@ -161,6 +161,7 @@
 </head>
 <body>
     <div id='test-buttons'>
+        <button id="teste-notificacao">Testar Notificação</button>
         <button id="testar-sucesso">Testar Sucesso</button>
         <button id="testar-confirmacao">Testar Confirmação</button>
         <button id="testar-erro">Testar Erro</button>
@@ -277,225 +278,133 @@
             showError("Ocorreu um erro!");
         });
     </script>
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitar Permissão para Notificações</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        #mensagem {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-        .success {
-            color: green;
-        }
-        .error {
-            color: red;
-        }
-    </style>
-</head>
-<body>
-    <div id="mensagem"></div>
-    <h3>Gerar Notificação Simples</h3>
-  	<button id="btn-notificacao">Solicitar Notificação</button>
-
+    
     <script>
-        const mensagemElement = document.getElementById('mensagem');
 
-        /**
-         * Mostra uma mensagem na tela.
-         * @param {string} text - A mensagem a ser mostrada.
-         * @param {string} className - A classe CSS a ser aplicada à mensagem.
-         */
-        function showMessage(text, className = '') {
-            mensagemElement.innerHTML = text;
-            mensagemElement.className = className;
-        }
+      // --------------- notificacao navegador --------------- //
+      const mensagemElement = document.getElementById('mensagem');
 
-        /**
-         * Mostra uma mensagem de confirmação.
-         * @param {string} message - A mensagem a ser mostrada.
-         */
-        function showConfirm(message) {
-            showMessage(message);
-        }
+      /**
+       * Mostra uma mensagem na tela.
+       * @param {string} text - A mensagem a ser mostrada.
+       * @param {string} className - A classe CSS a ser aplicada à mensagem.
+       */
+      function showMessage(text, className = '') {
+          mensagemElement.innerHTML = text;
+          mensagemElement.className = className;
+      }
 
-        /**
-         * Mostra uma mensagem de sucesso.
-         * @param {string} message - A mensagem a ser mostrada.
-         */
-        function showSuccess(message) {
-            showMessage(message, 'success');
-        }
+      /**
+       * Mostra a mensagem inicial para solicitar permissão para notificações.
+       */
+      function showInitialMessage() {
+          showConfirm("Por favor, permita as notificações para não perder alertas importantes!");
+      }
 
-        /**
-         * Mostra uma mensagem de erro.
-         * @param {string} message - A mensagem a ser mostrada.
-         */
-        function showError(message) {
-            showMessage(message, 'error');
-        }
-        
-        /**
-         * Mostra a mensagem inicial para solicitar permissão para notificações.
-         */
-        function showInitialMessage() {
-            showConfirm("Por favor, permita as notificações para não perder alertas importantes!");
-        }
+      // Adicionar evento de clique ao botão de teste
+      document.getElementById('teste-notificacao').addEventListener('click', function() {
+          if (isPermissionGranted()) {
+              new Notification('Notificação de teste', {
+                  body: 'Essa é uma notificação de teste!',
+                  // icon: 'icone.png' // opcional
+              });
+          } else {
+              askForNotificationPermission();
+          }
+      });
 
-        /**
-         * Verifica se o navegador suporta notificações.
-         * @returns {boolean} True se o navegador suporta notificações, false caso contrário.
-         */
-        function isNotificationSupported() {
-            return "Notification" in window;
-        }
+      /**
+       * Verifica se o navegador suporta notificações.
+       * @returns {boolean} True se o navegador suporta notificações, false caso contrário.
+       */
+      function isNotificationSupported() {
+          return "Notification" in window;
+      }
 
-        /**
-         * Verifica se a permissão para notificações foi concedida.
-         * @returns {boolean} True se a permissão foi concedida, false caso contrário.
-         */
-        function isPermissionGranted() {
-            return Notification.permission === "granted";
-        }
+      /**
+       * Verifica se a permissão para notificações foi concedida.
+       * @returns {boolean} True se a permissão foi concedida, false caso contrário.
+       */
+      function isPermissionGranted() {
+          return Notification.permission === "granted";
+      }
 
-        /**
-         * Verifica se a permissão para notificações foi negada.
-         * @returns {boolean} True se a permissão foi negada, false caso contrário.
-         */
-        function isPermissionDenied() {
-            return Notification.permission === "denied";
-        }
+      /**
+       * Verifica se a permissão para notificações foi negada.
+       * @returns {boolean} True se a permissão foi negada, false caso contrário.
+       */
+      function isPermissionDenied() {
+          return Notification.permission === "denied";
+      }
 
-        /**
-         * Verifica se o usuário está na aba anônima.
-         * @returns {boolean} True se o usuário está na aba anônima, false caso contrário.
-         */
-        function isIncognitoMode() {
-            try {
-                // Testa se o armazenamento local está disponível
-                window.localStorage.setItem('test', 'test');
-                window.localStorage.removeItem('test');
-                return false;
-            } catch (e) {
-                // Se ocorrer um erro, provavelmente está na aba anônima
-                return true;
-            }
-        }
+      /**
+       * Verifica se o usuário está na aba anônima.
+       * @returns {boolean} True se o usuário está na aba anônima, false caso contrário.
+       */
+      function isIncognitoMode() {
+          try {
+              // Testa se o armazenamento local está disponível
+              window.localStorage.setItem('test', 'test');
+              window.localStorage.removeItem('test');
+              return false;
+          } catch (e) {
+              // Se ocorrer um erro, provavelmente está na aba anônima
+              return true;
+          }
+      }
 
-        /**
-         * Solicita permissão para notificações ao usuário.
-         */
-        function askForNotificationPermission() {
-            if (!isNotificationSupported()) {
-                showError("Seu navegador não suporta notificações.");
-                return;
-            }
+      /**
+       * Solicita permissão para notificações ao usuário.
+       */
+      function askForNotificationPermission() {
+          if (!isNotificationSupported()) {
+              showError("Seu navegador não suporta notificações.");
+              return;
+          }
 
-            if (isIncognitoMode()) {
-                showError("Notificações não funcionam na aba anônima.");
-                return;
-            }
+          if (isIncognitoMode()) {
+              showError("Notificações não funcionam na aba anônima.");
+              return;
+          }
 
-            if (isPermissionGranted()) {
-                showSuccess("Notificações foram permitidas!");
-                return;
-            }
+          if (isPermissionGranted()) {
+              showSuccess("Notificações foram permitidas!");
+              return;
+          }
 
-            if (isPermissionDenied()) {
-                showError("Permissão já foi negada anteriormente. Você não receberá notificações. Dica: notificações não são permitidas no modo de navegação anônima.");
-                return;
-            }
-            
-		    try {
-		        Notification.requestPermission().then(permission => {
-		            if (permission === "granted") {
-		                showSuccess("Notificações ativadas com sucesso! Você receberá atualizações importantes.");
-		            } else {
-		                showError("Permissão negada. Você não receberá notificações. Por favor, verifique as configurações do seu navegador.");
-		            }
-		        });
-		    } catch (error) {
-		        showError("Erro ao solicitar permissão: " + error.message);
-		    }
-        }
+          if (isPermissionDenied()) {
+              showError("Permissão já foi negada anteriormente. Você não receberá notificações. Dica: notificações não são permitidas no modo de navegação anônima.");
+              return;
+          }
 
-        // Testes unitários
-        function runTests() {
-            console.log("Testes unitários:");
-            console.log("isNotificationSupported():", isNotificationSupported());
-            console.log("isPermissionGranted():", isPermissionGranted());
-            console.log("isPermissionDenied():", isPermissionDenied());
-            console.log("isIncognitoMode():", isIncognitoMode());
-        }
+          try {
+              Notification.requestPermission().then(permission => {
+                  if (permission === "granted") {
+                      showSuccess("Notificações ativadas com sucesso! Você receberá atualizações importantes.");
+                  } else {
+                      showError("Permissão negada. Você não receberá notificações. Por favor, verifique as configurações do seu navegador.");
+                  }
+              });
+          } catch (error) {
+              showError("Erro ao solicitar permissão: " + error.message);
+          }
+      }
 
-        // Solicitar permissão quando a página for carregada
-        window.addEventListener('load', () => {
-            showInitialMessage();
-            askForNotificationPermission();
-            runTests();
-        });
-        
-        // Inicio do bloco de teste
-        // Função para verificar condições antes de solicitar permissão
-	const btnNotificacao = document.getElementById('btn-notificacao');
-	    
-	function verificarCondicoes() {
-	  if (!isNotificationSupported()) {
-	    alert("Seu navegador não suporta notificações.");
-	    return false;
-	  }
-	
-	  if (isIncognitoMode()) {
-	    alert("Notificações não funcionam no modo anônimo.");
-	    return false;
-	  }
-	
-	  if (isPermissionDenied()) {
-	    alert("Permissão já foi negada anteriormente. Você não receberá notificações.");
-	    return false;
-	  }
-	
-	  if (isPermissionGranted()) {
-	    setTimeout(() => {
-	      new Notification('Notificação!', {
-	        body: 'Essa é uma notificação simples!',
-	        icon: 'https://picsum.photos/48/48'
-	      });
-	    }, 5000); // 5 segundos
-	    return false;
-	  }
-	
-	  return true;
-	}
-	
-	btnNotificacao.addEventListener('click', () => {
-	  if (verificarCondicoes()) {
-	    Notification.requestPermission().then(permission => {
-	      if (permission === 'granted') {
-	        setTimeout(() => {
-	          new Notification('Notificação!', {
-	            body: 'Essa é uma notificação simples!',
-	            icon: 'https://picsum.photos/48/48'
-	          });
-	        }, 5000); // 5 segundos
-	      } else {
-	        alert('Permissão negada!');
-	      }
-	    });
-	  }
-	});
-       // Fim do bloco de teste
-        
-    </script>
+      // Testes unitários
+      function runTests() {
+          console.log("Testes unitários:");
+          console.log("isNotificationSupported():", isNotificationSupported());
+          console.log("isPermissionGranted():", isPermissionGranted());
+          console.log("isPermissionDenied():", isPermissionDenied());
+          console.log("isIncognitoMode():", isIncognitoMode());
+      }
+
+      // Solicitar permissão quando a página for carregada
+      window.addEventListener('load', () => {
+          showInitialMessage();
+          askForNotificationPermission();
+          runTests();
+      });
+      </script>
 </body>
 </html>
