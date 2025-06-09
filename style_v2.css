@@ -1,14 +1,15 @@
-body {
+
+  		body {
             background: #f2f2f2;
             font-family: sans-serif;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            justify-content: ;
             margin: 0;
         }
 
         #test-buttons {
+            justify-content: top;
+            margin-top: 1vh;
             display: flex;
             gap: 15px;
         }
