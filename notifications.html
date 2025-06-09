@@ -103,10 +103,10 @@
         }
 
         .popup-content.confirm {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            color: #333; /* Texto escuro para contraste */
-        }
-
+		    background: linear-gradient(135deg, #FF7043 0%, #FFA726 100%); /* Laranja vibrante para um âmbar */
+		    color: white; /* Alterado para branco para melhor contraste com os tons de laranja */
+		}
+        
         .popup-icon {
             font-size: 48px; /* Ajuste o tamanho do ícone */
             margin-bottom: 10px;
@@ -139,10 +139,10 @@
             color: #4facfe;
         }
 
-        .popup-content.error .popup-btn-primary {
-            background-color: white;
-            color: #ff6b6b;
-        }
+		.popup-content.error {
+		    background: linear-gradient(135deg, #E53935 0%, #F44336 100%); /* Vermelho mais sóbrio para um coral vibrante */
+		    color: white;
+		}
         
         .popup-content.confirm .popup-btn-primary {
             background-color: #007bff;
@@ -254,7 +254,7 @@
         }
 
         function showError(message) {
-            showCustomPopup('error', '❌', 'Erro', message, [
+            showCustomPopup('error', '⚠️', 'Alerta', message, [
                 { text: 'OK', callback: null } // Callback nulo para apenas fechar
             ]);
         }
