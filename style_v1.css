@@ -1,0 +1,152 @@
+body {
+            background: #f2f2f2;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #test-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        #test-buttons button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            background-color: #007bff;
+            color: white;
+        }
+
+        #test-buttons button:hover {
+            background-color: #0056b3;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Garante que o popup fique acima de outros elementos */
+        }
+
+        @keyframes popupSlideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .popup-content {
+            animation: popupSlideIn 0.3s ease-in-out forwards; /* Adicionado forwards para manter o estado final */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            color: #333; /* Cor do texto padrão */
+        }
+
+        .popup-content h2 {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .popup-content p {
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .popup-content.error {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white; /* Texto branco para contraste */
+        }
+
+        .popup-content.success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white; /* Texto branco para contraste */
+        }
+
+        .popup-content.confirm {
+		    background: linear-gradient(135deg, #FF7043 0%, #FFA726 100%); /* Laranja vibrante para um âmbar */
+		    color: white; /* Alterado para branco para melhor contraste com os tons de laranja */
+		}
+        
+        .popup-icon {
+            font-size: 48px; /* Ajuste o tamanho do ícone */
+            margin-bottom: 10px;
+            display: block; /* Garante que o ícone ocupe sua própria linha */
+        }
+
+        .popup-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap; /* Permite que os botões quebrem a linha em telas menores */
+        }
+
+        .popup-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            min-width: 100px;
+            flex-grow: 1; /* Permite que os botões se expandam */
+            max-width: 150px; /* Limita o tamanho máximo do botão */
+        }
+
+        /* Cores dos botões dentro dos popups */
+        .popup-content.success .popup-btn-primary {
+            background-color: white;
+            color: #4facfe;
+        }
+
+		.popup-content.error {
+		    background: linear-gradient(135deg, #E53935 0%, #F44336 100%); /* Vermelho mais sóbrio para um coral vibrante */
+		    color: white;
+		}
+        
+        .popup-content.confirm .popup-btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .popup-btn:hover {
+            opacity: 0.8;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
