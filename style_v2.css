@@ -1,5 +1,5 @@
 
-  		body {
+	body {
             background: #f2f2f2;
             font-family: sans-serif;
             display: flex;
@@ -9,6 +9,7 @@
 
         #test-buttons {
             justify-content: top;
+	    align-items: center; /* Alinha verticalmente no centro, se necessário */
             margin-top: 1vh;
             display: flex;
             gap: 15px;
