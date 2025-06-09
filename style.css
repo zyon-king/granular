@@ -2,7 +2,6 @@
     /* style.css */
 
 body {
-    text-align: center;
     background: #f2f2f2;
 }
 
@@ -13,11 +12,11 @@ body {
         }
 
         .popup {        
-  			animation: ;
+  	    animation: ;
             position: fixed;
-  			top: 0;
-  			left: 0;
-  			transform: ;
+  	    top: 0;
+  	    left: 0;
+	    transform: ;
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
