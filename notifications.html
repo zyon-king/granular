@@ -298,7 +298,7 @@
        * Mostra a mensagem inicial para solicitar permissão para notificações.
        */
       function showInitialMessage() {
-          showConfirm("Por favor, permita as notificações para não perder alertas importantes!");
+          showError("Por favor, sempre permita as notificações para não perder alertas importantes!");
       }
 
       // Adicionar evento de clique ao botão de teste
@@ -401,8 +401,8 @@
 
       // Solicitar permissão quando a página for carregada
       window.addEventListener('load', () => {
-          showInitialMessage();
           askForNotificationPermission();
+          showInitialMessage();
           runTests();
       });
       </script>
