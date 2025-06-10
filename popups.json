@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Popups</title>
+  
+  <link rel="stylesheet" href="https://cdn.statically.io/gh/zyon-king/granular/main/style_v1.1.css" />
+  
+  <style>
+    /* Só para garantir que a popup apareça no topo 
+    .popup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+    }*/
+  </style>
+</head>
+<body>
+  <div id="mensagem"></div>
+
+  <div id="test-buttons">
+    <button id="teste-notificacao">Testar Notificação</button>
+    <button id="testar-sucesso">Testar Sucesso</button>
+    <button id="testar-confirmacao">Testar Confirmação</button>
+    <button id="testar-erro">Testar Erro</button>
+  </div>
+
+  <script>
+    async function loadAndRunScriptFromJSON(url) {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Falha ao buscar JSON');
+        const data = await res.json();
+
+        // Avalia o script dentro do JSON
+        eval(data.script);
+
+        // Agora que as funções estão disponíveis, conecta os eventos
+        document.getElementById('testar-sucesso').addEventListener('click', () => {
+          showSuccess("Ação realizada com sucesso!");
+        });
+
+        document.getElementById('testar-confirmacao').addEventListener('click', () => {
+          showConfirm("Você deseja excluir?").then(resposta => {
+             if (resposta) {
+               // Lógica para "Sim"              
+               showSuccess("Você clicou em Sim!");
+             } else {
+               // Lógica para "Não" ou clique fora
+               showError("Você clicou em Não!");
+             }
+          });
+        });
+
+        document.getElementById('testar-erro').addEventListener('click', () => {
+          showError("Ocorreu um erro!");
+        });
+
+        document.getElementById('teste-notificacao').addEventListener('click', () => {
+          if (isPermissionGranted()) {
+            new Notification('Notificação de teste', {
+              body: 'Essa é uma notificação de teste!',
+            });
+          } else {
+            askForNotificationPermission();
+          }
+        });
+
+      } catch (error) {
+        console.error('Erro carregando script JSON:', error);
+      }
+    }
+    document.addEventListener('popup-confirm-yes', () => {
+      console.log('Usuário clicou em SIM');
+    });
+
+    document.addEventListener('popup-confirm-no', () => {
+      console.log('Usuário clicou em NÃO');
+    });
+
+    // Aguarda DOM carregado antes de chamar
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAndRunScriptFromJSON('https://gist.githubusercontent.com/zyon-king/ce0eb6db9465ee86afa4badaf1296411/raw/popups.json');
+    });
+  </script>
+</body>
+</html>
+
+
+<!--
+
+<button id="teste-notificacao">Testar Notificação</button>
+
+<script>
+async function loadAndRunScriptFromJSON(url) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Falha ao buscar JSON');
+    const data = await res.json();
+
+    // data.script contém o código JS em string
+    // Avalia essa string como código JS
+    eval(data.script);
+
+    // Agora a função testarNotificacao está disponível e podemos conectar o evento
+    document.getElementById('teste-notificacao').addEventListener('click', testarNotificacao);
+
+  } catch (error) {
+    console.error('Erro carregando script JSON:', error);
+  }
+}
+
+// Exemplo de URL do gist raw do JSON — você precisa colocar o link raw direto do gist JSON
+loadAndRunScriptFromJSON('https://gist.githubusercontent.com/zyon-king/b1ca4c72d10cb3d6f4bee49123b2efd9/raw/popups.json');
+</script>
+-->
