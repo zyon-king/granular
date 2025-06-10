@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Teste de Notificação</title>
+</head>
+<body>
+  <button id="teste-notificacao">Testar Notificação</button>
+
+  <script>
+  	
+  	/*
+    // JSON armazenado como variável
+    const notificationScriptJSON = {
+      "script": "function testarNotificacao() { if (!('Notification' in window)) { alert('Este navegador não suporta notificações.'); return; } if (Notification.permission === 'granted') { new Notification('Notificação de teste', { body: 'Essa é uma notificação de teste!' }); } else if (Notification.permission !== 'denied') { Notification.requestPermission().then(function(permission) { if (permission === 'granted') { new Notification('Notificação de teste', { body: 'Essa é uma notificação de teste!' }); } else { alert('Permissão de notificação negada.'); } }); } else { alert('Permissão de notificação negada.'); } }"
+    };
+
+    // Avalia o código contido no JSON
+    eval(notificationScriptJSON.script);
+
+    // Conecta o botão à função carregada
+    document.addEventListener('DOMContentLoaded', () => {
+      const botao = document.getElementById('teste-notificacao');
+      if (typeof testarNotificacao === 'function') {
+        botao.addEventListener('click', testarNotificacao);
+      } else {
+        console.error('Função testarNotificacao não foi definida corretamente.');
+      }
+    });
+	*/
+    const jsonURL = 'https://raw.githubusercontent.com/zyon-king/granular/main/popups.json';
+
+fetch(jsonURL)
+  .then(res => res.json())
+  .then(notificationScriptJSON => {
+    eval(notificationScriptJSON.script);
+
+    document.getElementById('teste-notificacao').addEventListener('click', testarNotificacao);
+  })
+  .catch(err => console.error('Erro ao carregar JSON:', err));
+
+  </script>
+</body>
+</html>
