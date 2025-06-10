@@ -8,12 +8,13 @@
         }
 
         #test-buttons {
-            justify-content: top;
-	    align-items: center; /* Alinha verticalmente no centro, se necessário */
-            margin-top: 1vh;
-            display: flex;
-            gap: 15px;
-        }
+          display: flex;
+          justify-content: center; /* Centraliza horizontalmente */
+          align-items: center;     /* Centraliza verticalmente se houver altura */
+          margin-top: 1vh;
+          gap: 15px;
+          width: 100%; /* Garante que o contêiner ocupe a largura total disponível */
+      	}
 
         #test-buttons button {
             padding: 12px 25px;
