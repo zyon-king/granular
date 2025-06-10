@@ -1,45 +1,92 @@
+<!--
+🧠 Por que isso é útil?
+
+❌ Sem dependência de eventos ou callbacks soltos
+
+✅ Mais limpo, especialmente em scripts modulares
+
+✅ Funciona tanto antes como depois do carregamento do DOM
+
+✅ Pronto para ser encapsulado em módulos, JSON, ou carregado dinamicamente
+
+Abordagem poderosa, controlada e elegante: usar um JSON como configuração, 
+combinar isso com DOMContentLoaded e Promise para garantir que tudo só 
+rode quando estiver pronto e autorizado. Vamos montar isso com clareza.
+-->
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Teste de Notificação</title>
+  <title>Popups Corrigido</title>
+  
+  <link rel="stylesheet" href="https://cdn.statically.io/gh/zyon-king/granular/main/style_v1.1.css" />
+  
+  <style>
+  </style>
 </head>
 <body>
-  <button id="teste-notificacao">Testar Notificação</button>
+
+<!--
+  <div id="mensagem"></div>
+{
+  "script": "function showCustomPopup(type, icon, title, message, buttons) {\n  const popup = document.createElement('div');\n  popup.classList.add('popup');\n\n  const content = document.createElement('div');\n  if (type === 'error') {\n    content.classList.add('popup-content', 'error');\n  } else if (type === 'confirmation') {\n    content.classList.add('popup-content', 'confirm');\n  } else {\n    content.classList.add('popup-content', 'success');\n  }\n\n  popup.appendChild(content);\n\n  if (icon) {\n    const iconEl = document.createElement('span');\n    iconEl.classList.add('popup-icon');\n    iconEl.innerHTML = icon;\n    content.appendChild(iconEl);\n  }\n\n  const titleEl = document.createElement('h2');\n  titleEl.textContent = title;\n  content.appendChild(titleEl);\n\n  const messageEl = document.createElement('p');\n  messageEl.textContent = message;\n  content.appendChild(messageEl);\n\n  const buttonsEl = document.createElement('div');\n  buttonsEl.classList.add('popup-buttons');\n  content.appendChild(buttonsEl);\n\n  buttons.forEach(button => {\n    const buttonEl = document.createElement('button');\n    buttonEl.textContent = button.text;\n    buttonEl.classList.add('popup-btn', 'popup-btn-primary');\n    buttonEl.addEventListener('click', () => {\n      if (button.callback) {\n        button.callback();\n      }\n      popup.classList.add('fade-out');\n      setTimeout(() => {\n        popup.remove();\n      }, 500);\n    });\n    buttonsEl.appendChild(buttonEl);\n  });\n\n  popup.addEventListener('click', (e) => {\n    if (e.target === popup) {\n      popup.classList.add('fade-out');\n      setTimeout(() => {\n        popup.remove();\n      }, 500);\n    }\n  });\n\n  document.body.appendChild(popup);\n}\n\nfunction showConfirm(message, callbackSim, callbackNao) {\n  showCustomPopup('confirmation', '❓', 'Confirmação', message, [\n    { text: 'Sim', callback: callbackSim },\n    { text: 'Não', callback: callbackNao }\n  ]);\n}\n\nfunction showSuccess(message) {\n  showCustomPopup('success', '✅', 'Sucesso', message, [\n    { text: 'OK', callback: null }\n  ]);\n}\n\nfunction showError(message) {\n  showCustomPopup('error', '⚠️', 'Alerta', message, [\n    { text: 'OK', callback: null }\n  ]);\n}\n\nconst mensagemElement = document.getElementById('mensagem');\n\nfunction showMessage(text, className = '') {\n  mensagemElement.innerHTML = text;\n  mensagemElement.className = className;\n}\n\nfunction showInitialMessage() {\n  showError(\"Por favor, sempre permita as notificações para não perder alertas importantes!\");\n}\n\nfunction isNotificationSupported() {\n  return \"Notification\" in window;\n}\n\nfunction isPermissionGranted() {\n  return Notification.permission === \"granted\";\n}\n\nfunction isPermissionDenied() {\n  return Notification.permission === \"denied\";\n}\n\nfunction isIncognitoMode() {\n  try {\n    window.localStorage.setItem('test', 'test');\n    window.localStorage.removeItem('test');\n    return false;\n  } catch (e) {\n    return true;\n  }\n}\n\nasync function initializeApp() {\n  try {\n    await askForNotificationPermissionAsync();\n    showInitialMessage();\n    runTests();\n  } catch (error) {\n    showError(\"Erro ao inicializar: \" + error.message);\n  }\n}\n\nfunction askForNotificationPermissionAsync() {\n  return new Promise((resolve, reject) => {\n    if (!isNotificationSupported()) {\n      showError(\"Seu navegador não suporta notificações.\");\n      return reject(new Error(\"Notificações não suportadas\"));\n    }\n\n    if (isIncognitoMode()) {\n      showError(\"Notificações não funcionam na aba anônima.\");\n      return reject(new Error(\"Modo anônimo detectado\"));\n    }\n\n    if (isPermissionGranted()) {\n      showSuccess(\"Notificações foram permitidas!\");\n      return resolve(\"granted\");\n    }\n\n    if (isPermissionDenied()) {\n      showError(\"Permissão negada anteriormente. Notificações não funcionarão.\");\n      return reject(new Error(\"Permissão negada\"));\n    }\n\n    Notification.requestPermission()\n      .then(permission => {\n        if (permission === \"granted\") {\n          showSuccess(\"Notificações ativadas com sucesso!\");\n          resolve(permission);\n        } else {\n          showError(\"Permissão negada. Verifique as configurações do navegador.\");\n          reject(new Error(\"Permissão negada\"));\n        }\n      })\n      .catch(err => {\n        showError(\"Erro ao solicitar permissão: \" + err.message);\n        reject(err);\n      });\n  });\n}\n\nfunction runTests() {\n  console.log(\"Testes unitários:\");\n  console.log(\"isNotificationSupported():\", isNotificationSupported());\n  console.log(\"isPermissionGranted():\", isPermissionGranted());\n  console.log(\"isPermissionDenied():\", isPermissionDenied());\n  console.log(\"isIncognitoMode():\", isIncognitoMode());\n}\n\nfunction domReady() {\n  return new Promise(resolve => {\n    if (document.readyState === \"loading\") {\n      document.addEventListener(\"DOMContentLoaded\", resolve);\n    } else {\n      resolve();\n    }\n  });\n}\n\n(async () => {\n  await domReady();\n  await initializeApp();\n})();"
+}
+
+-->
+
+  <div id="test-buttons">
+    <button id="teste-notificacao">Testar Notificação</button>
+    <button id="testar-sucesso">Testar Sucesso</button>
+    <button id="testar-confirmacao">Testar Confirmação</button>
+    <button id="testar-erro">Testar Erro</button>
+  </div>
 
   <script>
-  	
-  	/*
-    // JSON armazenado como variável
-    const notificationScriptJSON = {
-      "script": "function testarNotificacao() { if (!('Notification' in window)) { alert('Este navegador não suporta notificações.'); return; } if (Notification.permission === 'granted') { new Notification('Notificação de teste', { body: 'Essa é uma notificação de teste!' }); } else if (Notification.permission !== 'denied') { Notification.requestPermission().then(function(permission) { if (permission === 'granted') { new Notification('Notificação de teste', { body: 'Essa é uma notificação de teste!' }); } else { alert('Permissão de notificação negada.'); } }); } else { alert('Permissão de notificação negada.'); } }"
-    };
-
-    // Avalia o código contido no JSON
-    eval(notificationScriptJSON.script);
-
-    // Conecta o botão à função carregada
-    document.addEventListener('DOMContentLoaded', () => {
-      const botao = document.getElementById('teste-notificacao');
-      if (typeof testarNotificacao === 'function') {
-        botao.addEventListener('click', testarNotificacao);
-      } else {
-        console.error('Função testarNotificacao não foi definida corretamente.');
-      }
-    });
-	*/
-    const jsonURL = 'https://raw.githubusercontent.com/zyon-king/granular/main/popups.json';
+const jsonURL = 'https://gist.githubusercontent.com/zyon-king/219d889891e2fc0e5f48f6c525fbac39/raw';
 
 fetch(jsonURL)
   .then(res => res.json())
-  .then(notificationScriptJSON => {
-    eval(notificationScriptJSON.script);
+  .then(json => {
+    console.log(json.script);
+    // Corrigido: Usando o ID 'mensagem' que agora corresponde ao HTML
+    const mensagemElement = document.getElementById('mensagem');
+    if (mensagemElement) {
+        mensagemElement.innerText = json.script;
+    }
 
-    document.getElementById('teste-notificacao').addEventListener('click', testarNotificacao);
+    eval(json.script);
+
+    document.getElementById('testar-sucesso').addEventListener('click', () => {
+      showSuccess("Ação realizada com sucesso!");
+    });
+
+    document.getElementById('testar-confirmacao').addEventListener('click', () => {
+      showConfirm("Você deseja excluir?", 
+        () => showSuccess("Você clicou em Sim!"),
+        () => showError("Você clicou em Não!")
+      );
+    });
+
+    document.getElementById('testar-erro').addEventListener('click', () => {
+      showError("Ocorreu um erro!");
+    });
+
+    document.getElementById('teste-notificacao').addEventListener('click', () => {
+      if (isPermissionGranted()) {
+        new Notification('Notificação de teste', {
+          body: 'Essa é uma notificação de teste!',
+        });
+      } else {
+        askForNotificationPermission();
+      }
+    });
   })
-  .catch(err => console.error('Erro ao carregar JSON:', err));
-
+  .catch(err => console.error('Erro ao carregar script:', err));
   </script>
 </body>
 </html>
+
+
+
