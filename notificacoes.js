@@ -10,7 +10,7 @@ HTML principal para garantir que tudo esteja pronto.
 porque `mensagemElement` pode ser `null` se `notificacoes.js` for 
 avaliado antes do DOM estar completamente carregado.*/
 
-```javascript
+
 function showCustomPopup(type, icon, title, message, buttons) {
   const popup = document.createElement('div');
   popup.classList.add('popup');
@@ -201,4 +201,4 @@ window.notificacoesReady = new Promise(resolve => {
 //   await domReady();
 //   await initializeApp();
 // })();
-```
+
