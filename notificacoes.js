@@ -62,7 +62,7 @@ function showCustomPopup(type, icon, title, message, buttons) {
   });
 
   popup.addEventListener('click', (e) => {
-    if (https://url.de.m.mimecastprotect.com/s/SOyfCRlpqgurlogKQf9fwh1WPqA?domain=e.target === popup) {
+    if (e.target === popup) {
       popup.classList.add('fade-out');
       setTimeout(() => {
         popup.remove();
