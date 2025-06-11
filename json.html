@@ -43,8 +43,10 @@ rode quando estiver pronto e autorizado. Vamos montar isso com clareza.
     <button id="testar-erro">Testar Erro</button>
   </div>
 
-  <script>
-const jsonURL = 'https://gist.githubusercontent.com/zyon-king/219d889891e2fc0e5f48f6c525fbac39/raw';
+  <!--<script>
+/*const jsonURL = 'https://gist.githubusercontent.com/zyon-king/219d889891e2fc0e5f48f6c525fbac39/raw';*/
+const jsonURL = 'https://raw.githubusercontent.com/zyon-king/granular/6ef004bc7c9c5cc8f769447a7d74c2982eb6f834/notificacoes.js
+';
 
 fetch(jsonURL)
   .then(res => res.json())
@@ -84,9 +86,56 @@ fetch(jsonURL)
     });
   })
   .catch(err => console.error('Erro ao carregar script:', err));
-  </script>
+  </script>-->
+  
+<script>
+const jsURL = 'https://raw.githubusercontent.com/zyon-king/granular/6ef004bc7c9c5cc8f769447a7d74c2982eb6f834/notificacoes.js';
+
+fetch(jsURL)
+  .then(res => res.text()) // ← CORRETO: tratar como texto
+  .then(scriptText => {
+    // Opcional: mostrar o conteúdo no console ou em uma div
+    console.log(scriptText);
+
+    // Executa o script baixado
+    eval(scriptText);
+
+    document.getElementById('testar-sucesso').addEventListener('click', () => {
+      showSuccess("Ação realizada com sucesso!");
+    });
+
+    document.getElementById('testar-confirmacao').addEventListener('click', () => {
+      showConfirm("Você deseja excluir?", 
+        () => showSuccess("Você clicou em Sim!"),
+        () => showError("Você clicou em Não!")
+      );
+    });
+
+    document.getElementById('testar-erro').addEventListener('click', () => {
+      showError("Ocorreu um erro!");
+    });
+
+    document.getElementById('teste-notificacao').addEventListener('click', () => {
+      if (isPermissionGranted()) {
+        new Notification('Notificação de teste', {
+          body: 'Essa é uma notificação de teste!',
+        });
+      } else {
+        askForNotificationPermission();
+      }
+    });
+  })
+  .catch(err => console.error('Erro ao carregar script:', err));
+</script>
+
+
+
+
 </body>
 </html>
+
+
+
 
 
 
