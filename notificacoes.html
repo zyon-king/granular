@@ -487,7 +487,7 @@
         function loadNotificacoesScript() {
             return new Promise((resolve, reject) => {
                 const jsURL = 'https://raw.githubusercontent.com/zyon-king/granular/main/notificacoes.js';
-
+        
                 fetch(jsURL)
                     .then(res => {
                         if (!res.ok) {
@@ -518,7 +518,7 @@
                     });
             });
         }
-
+        
         // Função para garantir que o DOM esteja pronto
         function domReady() {
             return new Promise(resolve => {
@@ -529,27 +529,161 @@
                 }
             });
         }
-
-        // Função principal de inicialização da sua aplicação
+        
+        // Referências dos elementos
+        const horaInicioSelect = document.getElementById('hora-inicio');
+        const minutoInicioSelect = document.getElementById('minuto-inicio');
+        const horaDuracaoSelect = document.getElementById('hora-duracao');
+        const minutoDuracaoSelect = document.getElementById('minuto-duracao');
+        const horaFimSelect = document.getElementById('hora-fim');
+        const minutoFimSelect = document.getElementById('minuto-fim');
+        const opcaoDuracaoRadio = document.getElementById('opcao-duracao');
+        const opcaoFimRadio = document.getElementById('opcao-fim');
+        const camposDuracao = document.getElementById('campos-duracao');
+        const camposFim = document.getElementById('campos-fim');
+        
+        // Função para preencher seletores
+        function populateSelect(selectElement, start, end) {
+            for (let i = start; i < end; i++) {
+                const option = document.createElement('option');
+                option.value = i.toString().padStart(2, '0');
+                option.textContent = i.toString().padStart(2, '0');
+                selectElement.appendChild(option);
+            }
+        }
+        
+        // Função para alternar entre campos de duração e fim
+        function toggleTimeInputs() {
+            document.querySelectorAll('input[name="opcao-pausa"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'duracao') {
+                        camposDuracao.style.display = 'flex';
+                        camposFim.style.display = 'none';
+                    } else {
+                        camposDuracao.style.display = 'none';
+                        camposFim.style.display = 'flex';
+                    }
+                });
+            });
+        }
+        
+        // Função para calcular duração em minutos
+        function calcularDuracaoMinutos(inicio, fim) {
+            const [horaInicio, minutoInicio] = inicio.split(':').map(Number);
+            const [horaFim, minutoFim] = fim.split(':').map(Number);
+            
+            const inicioMinutos = horaInicio * 60 + minutoInicio;
+            const fimMinutos = horaFim * 60 + minutoFim;
+            
+            let duracao = fimMinutos - inicioMinutos;
+            
+            // Se a duração for negativa, significa que passou da meia-noite
+            if (duracao < 0) {
+                duracao += 24 * 60; // Adiciona 24 horas em minutos
+            }
+            
+            return duracao;
+        }
+        
+        // Função para converter duração em minutos para texto
+        function calcularDuracaoTexto(duracaoMinutos) {
+            const horas = Math.floor(duracaoMinutos / 60);
+            const minutos = duracaoMinutos % 60;
+            
+            if (horas > 0 && minutos > 0) {
+                return `${horas}h ${minutos}min`;
+            } else if (horas > 0) {
+                return `${horas}h`;
+            } else {
+                return `${minutos}min`;
+            }
+        }
+        
+        // Função para calcular horário de fim baseado no início e duração
+        function calcularFim(inicio, duracaoMinutos) {
+            const [horaInicio, minutoInicio] = inicio.split(':').map(Number);
+            
+            const inicioMinutos = horaInicio * 60 + minutoInicio;
+            const fimMinutos = inicioMinutos + duracaoMinutos;
+            
+            const horaFim = Math.floor(fimMinutos / 60) % 24;
+            const minutoFim = fimMinutos % 60;
+            
+            return `${horaFim.toString().padStart(2, '0')}:${minutoFim.toString().padStart(2, '0')}`;
+        }
+        
+        // Função para adicionar pausa na lista
+        function adicionarPausaNaLista(inicio, fim, duracaoTexto) {
+            const listaPausasContainer = document.querySelector('#lista-pausas .lista-pausas-container');
+            
+            // Remove a mensagem "Nenhuma pausa agendada" se existir
+            const mensagemVazia = listaPausasContainer.querySelector('.lista-pausas-vazia');
+            if (mensagemVazia) {
+                mensagemVazia.remove();
+            }
+            
+            // Cria o elemento da pausa
+            const pausaItem = document.createElement('div');
+            pausaItem.className = 'pausa-item';
+            
+            pausaItem.innerHTML = `
+                <div class="pausa-info">
+                    <div>
+                        <div class="pausa-horario">${inicio} - ${fim}</div>
+                        <div class="pausa-duracao">Duração: ${duracaoTexto}</div>
+                    </div>
+                    <div class="pausa-acoes">
+                        <button class="btn-pausa btn-editar">Editar</button>
+                        <button class="btn-pausa btn-remover">Remover</button>
+                    </div>
+                </div>
+            `;
+            
+            // Adiciona event listeners para os botões
+            const btnRemover = pausaItem.querySelector('.btn-remover');
+            btnRemover.addEventListener('click', () => {
+                showConfirm('Deseja remover esta pausa?', 
+                    () => {
+                        pausaItem.remove();
+                        showSuccess('Pausa removida com sucesso!');
+                        
+                        // Se não há mais pausas, adiciona a mensagem vazia de volta
+                        if (listaPausasContainer.children.length === 0) {
+                            const novaMensagemVazia = document.createElement('div');
+                            novaMensagemVazia.className = 'lista-pausas-vazia';
+                            novaMensagemVazia.textContent = 'Nenhuma pausa agendada ainda.';
+                            listaPausasContainer.appendChild(novaMensagemVazia);
+                        }
+                    },
+                    () => {}
+                );
+            });
+            
+            const btnEditar = pausaItem.querySelector('.btn-editar');
+            btnEditar.addEventListener('click', () => {
+                showError('Funcionalidade de edição em desenvolvimento!');
+            });
+            
+            listaPausasContainer.appendChild(pausaItem);
+        }
+        
+        // Função principal de inicialização da aplicação
         async function initApp() {
             await domReady(); // Garante que o DOM está pronto primeiro
             console.log("DOM pronto.");
-
+        
             try {
                 await loadNotificacoesScript(); // Aguarda o script de notificações carregar e estar pronto
                 console.log("Notificações prontas para uso.");
-
-                // Agora que tudo está pronto, você pode inicializar a lógica principal da sua aplicação
-                // e configurar os event listeners que dependem das funções de notificação.
-
-                // Preencher seletores e definir valores padrão (já pode ser feito, não depende de notificações)
+        
+                // Preencher seletores e definir valores padrão
                 populateSelect(horaInicioSelect, 0, 24);
                 populateSelect(minutoInicioSelect, 0, 60);
                 populateSelect(horaDuracaoSelect, 0, 24);
                 populateSelect(minutoDuracaoSelect, 0, 60);
                 populateSelect(horaFimSelect, 0, 24);
                 populateSelect(minutoFimSelect, 0, 60);
-
+        
                 const agora = new Date();
                 horaInicioSelect.value = agora.getHours().toString().padStart(2, '0');
                 minutoInicioSelect.value = agora.getMinutes().toString().padStart(2, '0');
@@ -558,25 +692,25 @@
                 const fimPadrao = new Date(agora.getTime() + 30 * 60 * 1000);
                 horaFimSelect.value = fimPadrao.getHours().toString().padStart(2, '0');
                 minutoFimSelect.value = fimPadrao.getMinutes().toString().padStart(2, '0');
-
+        
                 toggleTimeInputs();
-
+        
                 // Adicionar os event listeners para os botões de teste
                 document.getElementById('testar-sucesso').addEventListener('click', () => {
                     showSuccess("Ação realizada com sucesso!");
                 });
-
+        
                 document.getElementById('testar-confirmacao').addEventListener('click', () => {
                     showConfirm("Você deseja excluir?", 
                         () => showSuccess("Você clicou em Sim!"),
                         () => showError("Você clicou em Não!")
                     );
                 });
-
+        
                 document.getElementById('testar-erro').addEventListener('click', () => {
                     showError("Ocorreu um erro!");
                 });
-
+        
                 document.getElementById('teste-notificacao').addEventListener('click', () => {
                     // isPermissionGranted e askForNotificationPermissionAsync vêm do script de notificações
                     if (isPermissionGranted()) {
@@ -587,21 +721,27 @@
                         askForNotificationPermissionAsync();
                     }
                 });
-
+        
                 // Event listener para o botão "Adicionar pausa"
                 document.getElementById('adicionar-pausa').addEventListener('click', function() {
                     const horaInicio = horaInicioSelect.value;
                     const minutoInicio = minutoInicioSelect.value;
                     const inicioString = `${horaInicio}:${minutoInicio}`;
-
+        
                     let duracaoMinutos;
                     let duracaoTexto;
                     let fimString;
-
+        
                     if (opcaoDuracaoRadio.checked) {
                         const horaDuracao = parseInt(horaDuracaoSelect.value);
                         const minutoDuracao = parseInt(minutoDuracaoSelect.value);
                         duracaoMinutos = horaDuracao * 60 + minutoDuracao;
+                        
+                        if (duracaoMinutos === 0) {
+                            showError("Duração da pausa não pode ser zero!");
+                            return;
+                        }
+                        
                         duracaoTexto = calcularDuracaoTexto(duracaoMinutos);
                         fimString = calcularFim(inicioString, duracaoMinutos);
                     } else {
@@ -609,6 +749,12 @@
                         const minutoFim = minutoFimSelect.value;
                         fimString = `${horaFim}:${minutoFim}`;
                         duracaoMinutos = calcularDuracaoMinutos(inicioString, fimString);
+                        
+                        if (duracaoMinutos === 0) {
+                            showError("Horário de fim deve ser diferente do horário de início!");
+                            return;
+                        }
+                        
                         duracaoTexto = calcularDuracaoTexto(duracaoMinutos);
                     }
                                         
@@ -620,7 +766,7 @@
                         () => showError("Operação cancelada!")
                     );
                 });
-
+        
                 // Adiciona a mensagem de "Nenhuma pausa agendada" inicialmente se a lista estiver vazia
                 const listaPausasContainer = document.querySelector('#lista-pausas .lista-pausas-container');
                 if (listaPausasContainer.children.length === 0) {
@@ -629,26 +775,15 @@
                     mensagemVazia.textContent = 'Nenhuma pausa agendada ainda.';
                     listaPausasContainer.appendChild(mensagemVazia);
                 }
-
+        
                 // Chamar initializeApp do script de notificações depois de tudo pronto
-                // Isso executará a lógica de permissão de notificação e os testes internos do script.
                 initializeApp();
-
+        
             } catch (error) {
                 console.error("Falha na inicialização da aplicação principal:", error);
-                // Já mostramos um erro dentro de loadNotificacoesScript, se for o caso
             }
         }
-
-        // --- Funções de Cálculo e Adição de Pausa (mantidas no script principal) ---
-
-        function populateSelect(selectElement, start, end) { /* ... */ }
-        function toggleTimeInputs() { /* ... */ }
-        function calcularDuracaoMinutos(inicio, fim) { /* ... */ }
-        function calcularDuracaoTexto(duracaoMinutos) { /* ... */ }
-        function calcularFim(inicio, duracaoMinutos) { /* ... */ }
-        function adicionarPausaNaLista(inicio, fim, duracaoTexto) { /* ... */ }
-
+        
         // Inicializa toda a aplicação quando o DOM estiver pronto e o script de notificações for carregado
         initApp();
     </script>
