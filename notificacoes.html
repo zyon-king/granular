@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>Controle de Pausa</title>
-    
     <link rel="stylesheet" href="https://raw.githubusercontent.com/zyon-king/granular/main/style_v1.1.css">
-    
     <style>
-        /* Seu CSS aqui */
+        /* Seu CSS aqui (mantido como está no seu código original) */
         body {
             font-family: Arial, sans-serif;
             max-width: 600px;
@@ -17,45 +14,38 @@
             padding: 20px;
             background-color: #f5f5f5;
         }
-        
         .container {
             background-color: white;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
         .form-group {
             margin-bottom: 25px;
         }
-        
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
             color: #333;
         }
-        
         .time-inputs {
             display: flex;
             gap: 15px;
             align-items: center;
             margin-top: 10px;
         }
-        
         .time-group {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        
         .time-group label {
             font-size: 12px;
             margin-bottom: 5px;
             font-weight: normal;
             color: #666;
         }
-        
         select {
             padding: 8px 12px;
             border: 2px solid #ddd;
@@ -65,19 +55,16 @@
             cursor: pointer;
             min-width: 70px;
         }
-        
         select:focus {
             outline: none;
             border-color: #007bff;
             box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
         }
-        
         h2 {
             color: #333;
             margin-bottom: 25px;
             text-align: center;
         }
-        
         .section-title {
             font-size: 16px;
             margin-bottom: 15px;
@@ -85,7 +72,6 @@
             border-bottom: 2px solid #e9ecef;
             padding-bottom: 5px;
         }
-
         /* Estilos para os radio buttons */
         .radio-options {
             display: flex;
@@ -93,23 +79,19 @@
             margin-bottom: 15px;
             padding-top: 10px;
         }
-
         .radio-option {
             display: flex;
             align-items: center;
         }
-
         .radio-option input[type="radio"] {
             margin-right: 8px;
             cursor: pointer;
         }
-
         .radio-option label {
             margin-bottom: 0; /* Remover margin-bottom padrão */
             font-weight: normal;
             cursor: pointer;
         }
-        
         /* Estilo do botão */
         .btn-adicionar {
             background-color: #007bff;
@@ -126,24 +108,20 @@
             width: 100%;
             max-width: 200px;
         }
-
         .btn-adicionar:hover {
             background-color: #0056b3;
             border-color: #0056b3;
             transform: translateY(-1px);
             box-shadow: 0 4px 8px rgba(0,123,255,0.3);
         }
-
         .btn-adicionar:focus {
             outline: none;
             box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
         }
-
         .btn-adicionar:active {
             transform: translateY(0);
             box-shadow: 0 2px 4px rgba(0,123,255,0.3);
         }
-
         /* Container para centralizar o botão */
         .button-container {
             display: flex;
@@ -152,14 +130,12 @@
             padding-top: 20px;
             border-top: 2px solid #e9ecef;
         }
-
         /* Estilo da lista de pausas */
         #lista-pausas {
             margin-top: 30px;
             padding-top: 20px;
             border-top: 2px solid #e9ecef;
         }
-
         .lista-pausas-titulo {
             font-size: 16px;
             margin-bottom: 15px;
@@ -168,7 +144,6 @@
             padding-bottom: 5px;
             font-weight: bold;
         }
-
         .lista-pausas-container {
             background-color: #f8f9fa;
             border-radius: 4px;
@@ -176,7 +151,6 @@
             margin-bottom: 15px;
             border: 1px solid #e9ecef;
         }
-
         .lista-pausas-vazia {
             text-align: center;
             color: #666;
@@ -186,7 +160,6 @@
             border-radius: 4px;
             border: 1px dashed #ddd;
         }
-
         /* Estilo para cada item de pausa */
         .pausa-item {
             background-color: white;
@@ -197,16 +170,13 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
         }
-
         .pausa-item:hover {
             box-shadow: 0 2px 6px rgba(0,0,0,0.15);
             transform: translateY(-1px);
         }
-
         .pausa-item:last-child {
             margin-bottom: 0;
         }
-
         .pausa-info {
             display: flex;
             justify-content: space-between;
@@ -214,23 +184,19 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-
         .pausa-horario {
             font-weight: bold;
             color: #333;
             font-size: 16px;
         }
-
         .pausa-duracao {
             color: #666;
             font-size: 14px;
         }
-
         .pausa-acoes {
             display: flex;
             gap: 8px;
         }
-
         .btn-pausa {
             padding: 6px 12px;
             border: 1px solid #ddd;
@@ -241,32 +207,27 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
         .btn-pausa:hover {
             background-color: #f8f9fa;
             border-color: #007bff;
             color: #007bff;
         }
-
         .btn-pausa.btn-remover:hover {
             background-color: #f8d7da;
             border-color: #dc3545;
             color: #dc3545;
         }
-
         /* Responsividade para telas menores */
         @media (max-width: 480px) {
             .pausa-info {
                 flex-direction: column;
                 align-items: flex-start;
             }
-            
             .pausa-acoes {
                 width: 100%;
                 justify-content: flex-end;
             }
         }
-        
         #mensagem {
             padding: 10px;
             margin: 10px 0;
@@ -285,7 +246,6 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-
         /* Novas classes para o popup */
         .popup {
             position: fixed;
@@ -301,11 +261,9 @@
             opacity: 1;
             transition: opacity 0.5s ease-in-out;
         }
-
         .popup.fade-out {
             opacity: 0;
         }
-
         .popup-content {
             background-color: white;
             padding: 30px;
@@ -316,56 +274,45 @@
             width: 90%;
             animation: slideIn 0.3s ease-out;
         }
-
         .popup-content.success {
             border-top: 5px solid #28a745;
         }
-
         .popup-content.error {
             border-top: 5px solid #dc3545;
         }
-
         .popup-content.confirm {
             border-top: 5px solid #ffc107;
         }
-
         .popup-icon {
             font-size: 48px;
             display: block;
             margin-bottom: 15px;
         }
-
         .popup-content.success .popup-icon {
             color: #28a745;
         }
-
         .popup-content.error .popup-icon {
             color: #dc3545;
         }
-
         .popup-content.confirm .popup-icon {
             color: #ffc107;
         }
-
         .popup-content h2 {
             margin-top: 0;
             margin-bottom: 15px;
             font-size: 24px;
             color: #333;
         }
-
         .popup-content p {
             margin-bottom: 25px;
             color: #555;
             line-height: 1.5;
         }
-
         .popup-buttons {
             display: flex;
             justify-content: center;
             gap: 15px;
         }
-
         .popup-btn {
             padding: 10px 25px;
             border: none;
@@ -374,27 +321,22 @@
             font-size: 16px;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
-
         .popup-btn-primary {
             background-color: #007bff;
             color: white;
         }
-
         .popup-btn-primary:hover {
             background-color: #0056b3;
             transform: translateY(-1px);
         }
-
         .popup-btn-secondary {
             background-color: #6c757d;
             color: white;
         }
-
         .popup-btn-secondary:hover {
             background-color: #5a6268;
             transform: translateY(-1px);
         }
-
         @keyframes slideIn {
             from {
                 transform: translateY(-50px);
@@ -411,12 +353,12 @@
 
     <div class="container">
     
-    <div id="testes">
+        <div id="testes">
             <button id="teste-notificacao">Testar Notificação</button>
             <button id="testar-sucesso">Testar Sucesso</button>
             <button id="testar-confirmacao">Testar Confirmação</button>
             <button id="testar-erro">Testar Erro</button>
-    </div>
+        </div>
         <h2>Controle de Pausa</h2>
         
         <div class="form-group">
@@ -484,41 +426,44 @@
     
     <script>
         // Função para carregar o script de notificações dinamicamente
-        function loadNotificacoesScript() {
+        function loadScriptAsTextAndEval(url) {
             return new Promise((resolve, reject) => {
-                const jsURL = 'https://raw.githubusercontent.com/zyon-king/granular/main/notificacoes.js';
-        
-                fetch(jsURL)
-                    .then(res => {
-                        if (!res.ok) {
-                            throw new Error(`HTTP error! status: ${res.status}`);
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
                         }
-                        return res.text();
+                        return response.text();
                     })
                     .then(scriptText => {
-                        // Executa o script baixado no escopo global
                         // eslint-disable-next-line no-eval
                         eval(scriptText); 
-                        // Agora, esperamos que o script avaliado tenha definido window.notificacoesReady
-                        if (window.notificacoesReady) {
-                            return window.notificacoesReady; // Espera a promise interna do script
+                        // Espera pela Promise 'notificacoesReady' que o script avaliado deve definir
+                        if (window.notificacoesReady && window.notificacoesReady instanceof Promise) {
+                            return window.notificacoesReady;
                         } else {
-                            // Se notificacoesReady não foi definido (erro no script ou versão antiga)
-                            throw new Error("Script de notificações não sinalizou que está pronto.");
+                            // Se a Promise não for definida, resolve imediatamente (compatibilidade)
+                            console.warn("window.notificacoesReady não é uma Promise ou não foi definida. Assumindo que o script está pronto.");
+                            return Promise.resolve();
                         }
                     })
                     .then(() => {
-                        console.log("Script de notificações e suas funções estão prontos.");
+                        console.log("Script externo carregado e avaliado com sucesso.");
                         resolve();
                     })
                     .catch(err => {
-                        console.error('Erro ao carregar ou executar script de notificações:', err);
-                        showError("Erro crítico: Não foi possível carregar as funcionalidades de notificação.");
+                        console.error('Erro ao carregar ou executar script externo:', err);
+                        // showError (se disponível) ou alert para erros críticos no carregamento
+                        if (typeof showError === 'function') {
+                             showError("Erro crítico: Não foi possível carregar as funcionalidades essenciais.");
+                        } else {
+                            alert("Erro crítico: Não foi possível carregar as funcionalidades essenciais. Verifique o console.");
+                        }
                         reject(err);
                     });
             });
         }
-        
+
         // Função para garantir que o DOM esteja pronto
         function domReady() {
             return new Promise(resolve => {
@@ -529,19 +474,15 @@
                 }
             });
         }
-        
-        // Referências dos elementos
-        const horaInicioSelect = document.getElementById('hora-inicio');
-        const minutoInicioSelect = document.getElementById('minuto-inicio');
-        const horaDuracaoSelect = document.getElementById('hora-duracao');
-        const minutoDuracaoSelect = document.getElementById('minuto-duracao');
-        const horaFimSelect = document.getElementById('hora-fim');
-        const minutoFimSelect = document.getElementById('minuto-fim');
-        const opcaoDuracaoRadio = document.getElementById('opcao-duracao');
-        const opcaoFimRadio = document.getElementById('opcao-fim');
-        const camposDuracao = document.getElementById('campos-duracao');
-        const camposFim = document.getElementById('campos-fim');
-        
+
+        // Referências dos elementos DOM
+        let horaInicioSelect, minutoInicioSelect;
+        let horaDuracaoSelect, minutoDuracaoSelect;
+        let horaFimSelect, minutoFimSelect;
+        let opcaoDuracaoRadio, opcaoFimRadio;
+        let camposDuracao, camposFim;
+        let listaPausasContainer; // Nova referência
+
         // Função para preencher seletores
         function populateSelect(selectElement, start, end) {
             for (let i = start; i < end; i++) {
@@ -551,7 +492,7 @@
                 selectElement.appendChild(option);
             }
         }
-        
+
         // Função para alternar entre campos de duração e fim
         function toggleTimeInputs() {
             document.querySelectorAll('input[name="opcao-pausa"]').forEach(radio => {
@@ -566,7 +507,7 @@
                 });
             });
         }
-        
+
         // Função para calcular duração em minutos
         function calcularDuracaoMinutos(inicio, fim) {
             const [horaInicio, minutoInicio] = inicio.split(':').map(Number);
@@ -584,7 +525,7 @@
             
             return duracao;
         }
-        
+
         // Função para converter duração em minutos para texto
         function calcularDuracaoTexto(duracaoMinutos) {
             const horas = Math.floor(duracaoMinutos / 60);
@@ -598,7 +539,7 @@
                 return `${minutos}min`;
             }
         }
-        
+
         // Função para calcular horário de fim baseado no início e duração
         function calcularFim(inicio, duracaoMinutos) {
             const [horaInicio, minutoInicio] = inicio.split(':').map(Number);
@@ -611,11 +552,9 @@
             
             return `${horaFim.toString().padStart(2, '0')}:${minutoFim.toString().padStart(2, '0')}`;
         }
-        
+
         // Função para adicionar pausa na lista
         function adicionarPausaNaLista(inicio, fim, duracaoTexto) {
-            const listaPausasContainer = document.querySelector('#lista-pausas .lista-pausas-container');
-            
             // Remove a mensagem "Nenhuma pausa agendada" se existir
             const mensagemVazia = listaPausasContainer.querySelector('.lista-pausas-vazia');
             if (mensagemVazia) {
@@ -655,7 +594,7 @@
                             listaPausasContainer.appendChild(novaMensagemVazia);
                         }
                     },
-                    () => {}
+                    () => {} // Callback para 'Não' (não faz nada)
                 );
             });
             
@@ -666,124 +605,141 @@
             
             listaPausasContainer.appendChild(pausaItem);
         }
-        
+
         // Função principal de inicialização da aplicação
         async function initApp() {
             await domReady(); // Garante que o DOM está pronto primeiro
             console.log("DOM pronto.");
-        
-            try {
-                await loadNotificacoesScript(); // Aguarda o script de notificações carregar e estar pronto
-                console.log("Notificações prontas para uso.");
-        
-                // Preencher seletores e definir valores padrão
-                populateSelect(horaInicioSelect, 0, 24);
-                populateSelect(minutoInicioSelect, 0, 60);
-                populateSelect(horaDuracaoSelect, 0, 24);
-                populateSelect(minutoDuracaoSelect, 0, 60);
-                populateSelect(horaFimSelect, 0, 24);
-                populateSelect(minutoFimSelect, 0, 60);
-        
-                const agora = new Date();
-                horaInicioSelect.value = agora.getHours().toString().padStart(2, '0');
-                minutoInicioSelect.value = agora.getMinutes().toString().padStart(2, '0');
-                horaDuracaoSelect.value = '00';
-                minutoDuracaoSelect.value = '30';
-                const fimPadrao = new Date(agora.getTime() + 30 * 60 * 1000);
-                horaFimSelect.value = fimPadrao.getHours().toString().padStart(2, '0');
-                minutoFimSelect.value = fimPadrao.getMinutes().toString().padStart(2, '0');
-        
-                toggleTimeInputs();
-        
-                // Adicionar os event listeners para os botões de teste
-                document.getElementById('testar-sucesso').addEventListener('click', () => {
-                    showSuccess("Ação realizada com sucesso!");
-                });
-        
-                document.getElementById('testar-confirmacao').addEventListener('click', () => {
-                    showConfirm("Você deseja excluir?", 
-                        () => showSuccess("Você clicou em Sim!"),
-                        () => showError("Você clicou em Não!")
-                    );
-                });
-        
-                document.getElementById('testar-erro').addEventListener('click', () => {
-                    showError("Ocorreu um erro!");
-                });
-        
-                document.getElementById('teste-notificacao').addEventListener('click', () => {
-                    // isPermissionGranted e askForNotificationPermissionAsync vêm do script de notificações
-                    if (isPermissionGranted()) {
-                        new Notification('Notificação de teste', {
+
+            // Obter as referências dos elementos DOM
+            horaInicioSelect = document.getElementById('hora-inicio');
+            minutoInicioSelect = document.getElementById('minuto-inicio');
+            horaDuracaoSelect = document.getElementById('hora-duracao');
+            minutoDuracaoSelect = document.getElementById('minuto-duracao');
+            horaFimSelect = document.getElementById('hora-fim');
+            minutoFimSelect = document.getElementById('minuto-fim');
+            opcaoDuracaoRadio = document.getElementById('opcao-duracao');
+            opcaoFimRadio = document.getElementById('opcao-fim');
+            camposDuracao = document.getElementById('campos-duracao');
+            camposFim = document.getElementById('campos-fim');
+            listaPausasContainer = document.querySelector('#lista-pausas .lista-pausas-container');
+
+            // Carrega e avalia o script de notificações. Aguarda sua sinalização de "pronto".
+            await loadScriptAsTextAndEval('https://raw.githubusercontent.com/zyon-king/granular/main/notificacoes.js');
+            console.log("Notificações e popups de alerta prontos para uso.");
+
+            // Preencher seletores e definir valores padrão
+            populateSelect(horaInicioSelect, 0, 24);
+            populateSelect(minutoInicioSelect, 0, 60);
+            populateSelect(horaDuracaoSelect, 0, 24);
+            populateSelect(minutoDuracaoSelect, 0, 60);
+            populateSelect(horaFimSelect, 0, 24);
+            populateSelect(minutoFimSelect, 0, 60);
+
+            const agora = new Date();
+            horaInicioSelect.value = agora.getHours().toString().padStart(2, '0');
+            minutoInicioSelect.value = agora.getMinutes().toString().padStart(2, '0');
+            horaDuracaoSelect.value = '00';
+            minutoDuracaoSelect.value = '30';
+            const fimPadrao = new Date(agora.getTime() + 30 * 60 * 1000);
+            horaFimSelect.value = fimPadrao.getHours().toString().padStart(2, '0');
+            minutoFimSelect.value = fimPadrao.getMinutes().toString().padStart(2, '0');
+
+            toggleTimeInputs();
+
+            // Adicionar os event listeners para os botões de teste
+            document.getElementById('testar-sucesso').addEventListener('click', () => {
+                showSuccess("Ação realizada com sucesso!");
+            });
+
+            document.getElementById('testar-confirmacao').addEventListener('click', () => {
+                showConfirm("Você deseja excluir?", 
+                    () => showSuccess("Você clicou em Sim!"),
+                    () => showError("Você clicou em Não!")
+                );
+            });
+
+            document.getElementById('testar-erro').addEventListener('click', () => {
+                showError("Ocorreu um erro!");
+            });
+
+            document.getElementById('teste-notificacao').addEventListener('click', async () => {
+                // isPermissionGranted e askForNotificationPermissionAsync vêm do script de notificações
+                if (typeof isPermissionGranted === 'function' && isPermissionGranted()) {
+                    new Notification('Notificação de teste', {
+                        body: 'Essa é uma notificação de teste!',
+                    });
+                } else if (typeof askForNotificationPermissionAsync === 'function') {
+                    await askForNotificationPermissionAsync(); // Solicita permissão se ainda não concedida
+                    if (isPermissionGranted()) { // Tenta novamente após a solicitação
+                         new Notification('Notificação de teste', {
                             body: 'Essa é uma notificação de teste!',
                         });
-                    } else {
-                        askForNotificationPermissionAsync();
                     }
-                });
-        
-                // Event listener para o botão "Adicionar pausa"
-                document.getElementById('adicionar-pausa').addEventListener('click', function() {
-                    const horaInicio = horaInicioSelect.value;
-                    const minutoInicio = minutoInicioSelect.value;
-                    const inicioString = `${horaInicio}:${minutoInicio}`;
-        
-                    let duracaoMinutos;
-                    let duracaoTexto;
-                    let fimString;
-        
-                    if (opcaoDuracaoRadio.checked) {
-                        const horaDuracao = parseInt(horaDuracaoSelect.value);
-                        const minutoDuracao = parseInt(minutoDuracaoSelect.value);
-                        duracaoMinutos = horaDuracao * 60 + minutoDuracao;
-                        
-                        if (duracaoMinutos === 0) {
-                            showError("Duração da pausa não pode ser zero!");
-                            return;
-                        }
-                        
-                        duracaoTexto = calcularDuracaoTexto(duracaoMinutos);
-                        fimString = calcularFim(inicioString, duracaoMinutos);
-                    } else {
-                        const horaFim = horaFimSelect.value;
-                        const minutoFim = minutoFimSelect.value;
-                        fimString = `${horaFim}:${minutoFim}`;
-                        duracaoMinutos = calcularDuracaoMinutos(inicioString, fimString);
-                        
-                        if (duracaoMinutos === 0) {
-                            showError("Horário de fim deve ser diferente do horário de início!");
-                            return;
-                        }
-                        
-                        duracaoTexto = calcularDuracaoTexto(duracaoMinutos);
-                    }
-                                        
-                    showConfirm(`Deseja adicionar a pausa?\nInício: ${inicioString}\nFim: ${fimString}\nDuração: ${duracaoTexto}`, 
-                        () => {
-                            adicionarPausaNaLista(inicioString, fimString, duracaoTexto);
-                            showSuccess(`Pausa adicionada!\nInício: ${inicioString}\nFim: ${fimString}\nDuração: ${duracaoTexto}`);
-                        },
-                        () => showError("Operação cancelada!")
-                    );
-                });
-        
-                // Adiciona a mensagem de "Nenhuma pausa agendada" inicialmente se a lista estiver vazia
-                const listaPausasContainer = document.querySelector('#lista-pausas .lista-pausas-container');
-                if (listaPausasContainer.children.length === 0) {
-                    const mensagemVazia = document.createElement('div');
-                    mensagemVazia.className = 'lista-pausas-vazia';
-                    mensagemVazia.textContent = 'Nenhuma pausa agendada ainda.';
-                    listaPausasContainer.appendChild(mensagemVazia);
+                } else {
+                    console.warn("Funções de notificação não disponíveis.");
                 }
-        
-                // Chamar initializeApp do script de notificações depois de tudo pronto
-                initializeApp();
-        
-            } catch (error) {
-                console.error("Falha na inicialização da aplicação principal:", error);
+            });
+
+            // Event listener para o botão "Adicionar pausa"
+            document.getElementById('adicionar-pausa').addEventListener('click', function() {
+                const horaInicio = horaInicioSelect.value;
+                const minutoInicio = minutoInicioSelect.value;
+                const inicioString = `${horaInicio}:${minutoInicio}`;
+
+                let duracaoMinutos;
+                let duracaoTexto;
+                let fimString;
+
+                if (opcaoDuracaoRadio.checked) {
+                    const horaDuracao = parseInt(horaDuracaoSelect.value);
+                    const minutoDuracao = parseInt(minutoDuracaoSelect.value);
+                    duracaoMinutos = horaDuracao * 60 + minutoDuracao;
+                    
+                    if (duracaoMinutos === 0) {
+                        showError("Duração da pausa não pode ser zero!");
+                        return;
+                    }
+                    
+                    duracaoTexto = calcularDuracaoTexto(duracaoMinutos);
+                    fimString = calcularFim(inicioString, duracaoMinutos);
+                } else {
+                    const horaFim = horaFimSelect.value;
+                    const minutoFim = minutoFimSelect.value;
+                    fimString = `${horaFim}:${minutoFim}`;
+                    duracaoMinutos = calcularDuracaoMinutos(inicioString, fimString);
+                    
+                    if (duracaoMinutos === 0) {
+                        showError("Horário de fim deve ser diferente do horário de início!");
+                        return;
+                    }
+                    
+                    duracaoTexto = calcularDuracaoTexto(duracaoMinutos);
+                }
+                                        
+                showConfirm(`Deseja adicionar a pausa?\nInício: ${inicioString}\nFim: ${fimString}\nDuração: ${duracaoTexto}`, 
+                    () => {
+                        adicionarPausaNaLista(inicioString, fimString, duracaoTexto);
+                        showSuccess(`Pausa adicionada!\nInício: ${inicioString}\nFim: ${fimString}\nDuração: ${duracaoTexto}`);
+                    },
+                    () => showError("Operação cancelada!")
+                );
+            });
+
+            // Adiciona a mensagem de "Nenhuma pausa agendada" inicialmente se a lista estiver vazia
+            if (listaPausasContainer.children.length === 0) {
+                const mensagemVazia = document.createElement('div');
+                mensagemVazia.className = 'lista-pausas-vazia';
+                mensagemVazia.textContent = 'Nenhuma pausa agendada ainda.';
+                listaPausasContainer.appendChild(mensagemVazia);
+            }
+            
+            // Chama a inicialização do script de notificações (se existir)
+            if (typeof initializeApp === 'function') {
+                initializeApp(); 
             }
         }
-        
+
         // Inicializa toda a aplicação quando o DOM estiver pronto e o script de notificações for carregado
         initApp();
     </script>
