@@ -1,3 +1,16 @@
+/**Observações sobre a modificação do `notificacoes.js`:**
+
+* Adicionei `window.notificacoesReady = new Promise(resolve => { resolve(); });` 
+no final. Isso cria uma Promise global que é resolvida imediatamente após 
+o script ser totalmente `eval`uado e suas funções definidas.
+* Comentei o `domReady` e `initializeApp` no final do `notificacoes.js`. 
+A lógica de inicialização e chamadas de teste será movida para o seu 
+HTML principal para garantir que tudo esteja pronto.
+* Adicionei uma verificação `if (mensagemElement)` dentro de `showMessage` 
+porque `mensagemElement` pode ser `null` se `notificacoes.js` for 
+avaliado antes do DOM estar completamente carregado.*/
+
+```javascript
 function showCustomPopup(type, icon, title, message, buttons) {
   const popup = document.createElement('div');
   popup.classList.add('popup');
@@ -49,7 +62,7 @@ function showCustomPopup(type, icon, title, message, buttons) {
   });
 
   popup.addEventListener('click', (e) => {
-    if (e.target === popup) {
+    if (https://url.de.m.mimecastprotect.com/s/SOyfCRlpqgurlogKQf9fwh1WPqA?domain=e.target === popup) {
       popup.classList.add('fade-out');
       setTimeout(() => {
         popup.remove();
@@ -79,11 +92,16 @@ function showError(message) {
   ]);
 }
 
-const mensagemElement = document.getElementById('mensagem');
+const mensagemElement = document.getElementById('mensagem'); // Pode ser null se o script for avaliado antes do DOM estar pronto
 
 function showMessage(text, className = '') {
-  mensagemElement.innerHTML = text;
-  mensagemElement.className = className;
+  // Verificação para garantir que mensagemElement existe
+  if (mensagemElement) {
+    mensagemElement.innerHTML = text;
+    mensagemElement.className = className;
+  } else {
+    console.warn("Elemento 'mensagem' não encontrado. Mensagem: " + text);
+  }
 }
 
 function showInitialMessage() {
@@ -169,17 +187,18 @@ function runTests() {
   console.log("isIncognitoMode():", isIncognitoMode());
 }
 
-function domReady() {
-  return new Promise(resolve => {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", resolve);
-    } else {
-      resolve();
-    }
-  });
-}
+// Adicionando um mecanismo de 'ready' para o script de notificações
+window.notificacoesReady = new Promise(resolve => {
+    // Quando o script termina de ser avaliado, ele se resolve
+    // Isso garante que todas as funções declaradas nele estejam disponíveis.
+    resolve(); 
+});
 
-(async () => {
-  await domReady();
-  await initializeApp();
-})();
+// A inicialização dos testes e do app deve ser movida para o HTML ou para uma função
+// que o HTML chama quando o DOM estiver pronto E as notificações estiverem prontas.
+// Assim, initializeApp não é chamado prematuramente aqui.
+// (async () => {
+//   await domReady();
+//   await initializeApp();
+// })();
+```
