@@ -1,13 +1,12 @@
 /**Observações sobre a modificação do `notificacoes.js`:**
-
-* Adicionei `window.notificacoesReady = new Promise(resolve => { resolve(); });` 
-no final. Isso cria uma Promise global que é resolvida imediatamente após 
+* Adicionei `window.notificacoesReady = new Promise(resolve => { resolve(); });`
+no final. Isso cria uma Promise global que é resolvida imediatamente após
 o script ser totalmente `eval`uado e suas funções definidas.
-* Comentei o `domReady` e `initializeApp` no final do `notificacoes.js`. 
-A lógica de inicialização e chamadas de teste será movida para o seu 
+* Comentei o `domReady` e `initializeApp` no final do `notificacoes.js`.
+A lógica de inicialização e chamadas de teste será movida para o seu
 HTML principal para garantir que tudo esteja pronto.
-* Adicionei uma verificação `if (mensagemElement)` dentro de `showMessage` 
-porque `mensagemElement` pode ser `null` se `notificacoes.js` for 
+* Adicionei uma verificação `if (mensagemElement)` dentro de `showMessage`
+porque `mensagemElement` pode ser `null` se `notificacoes.js` for
 avaliado antes do DOM estar completamente carregado.*/
 
 
@@ -62,6 +61,7 @@ function showCustomPopup(type, icon, title, message, buttons) {
   });
 
   popup.addEventListener('click', (e) => {
+    // LINHA CORRIGIDA
     if (e.target === popup) {
       popup.classList.add('fade-out');
       setTimeout(() => {
@@ -133,10 +133,11 @@ function isIncognitoMode() {
 async function initializeApp() {
   try {
     await askForNotificationPermissionAsync();
-    showInitialMessage();
+    showInitialMessage(); // Esta função agora também pode ser chamada com segurança
     runTests();
   } catch (error) {
-    showError("Erro ao inicializar: " + error.message);
+    console.error("Erro ao inicializar no notificacoes.js:", error); // Adicionei este log para depuração
+    // showError("Erro ao inicializar: " + error.message); // Não chame showError aqui se ele ainda não estiver disponível.
   }
 }
 
@@ -191,14 +192,20 @@ function runTests() {
 window.notificacoesReady = new Promise(resolve => {
     // Quando o script termina de ser avaliado, ele se resolve
     // Isso garante que todas as funções declaradas nele estejam disponíveis.
-    resolve(); 
+    console.log("notificacoes.js: Script principal foi executado e está resolvendo a Promise.");
+    resolve();
 });
+
+// Função para depuração (pode ser removida após funcionar)
+function functionFromExternalJS() {
+    console.log("notificacoes.js: functionFromExternalJS foi chamada!");
+    return "Função do JS externo executada!";
+}
 
 // A inicialização dos testes e do app deve ser movida para o HTML ou para uma função
 // que o HTML chama quando o DOM estiver pronto E as notificações estiverem prontas.
 // Assim, initializeApp não é chamado prematuramente aqui.
 // (async () => {
-//   await domReady();
-//   await initializeApp();
+//    await domReady();
+//    await initializeApp();
 // })();
-
