@@ -283,117 +283,110 @@
     <script src="https://cdn.statically.io/gh/zyon-king/modular/main/alarm-clock.js"></script>
     <script src="https://cdn.statically.io/gh/zyon-king/granular/main/v3_time-carousel-input.js"></script>
 
-    <script>
-        // Este script principal adapta a lógica do despertador para usar as funções
-        // do novo carrossel de tempo.
-        document.addEventListener('DOMContentLoaded', () => {
-            // Verifica se as funções do time-carousel-input.js estão disponíveis no escopo global.
-            // Nota: Se 'v1_time-carousel-input.js' for um Módulo ES6,
-            // você precisaria importá-las. Para scripts simples (não-módulos),
-            // elas estarão globalmente disponíveis.
-            if (typeof getSelectedHour === 'function' && typeof getSelectedMinute === 'function' && typeof setInitialTime === 'function') {
+<script>
+    // Este script principal adapta a lógica do despertador para usar as funções
+    // do novo carrossel de tempo.
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof getSelectedHour === 'function' && typeof getSelectedMinute === 'function' && typeof setInitialTime === 'function') {
 
-                // Configura a hora inicial nos carrosséis ao carregar a página
+            // Configura a hora inicial nos carrosséis ao carregar a página
+            const now = new Date();
+            setInitialTime(now.getHours(), now.getMinutes());
+
+            // Referências aos elementos do DOM para a lógica do despertador
+            const setAlarmButton = document.getElementById('setAlarmButton');
+            const statusMessage = document.getElementById('status-message');
+            const currentTimeDisplay = document.getElementById('current-time');
+
+            let alarmSet = false;
+            let alarmHour;
+            let alarmMinute;
+            
+            // Variável para o ID do intervalo do relógio principal
+            let mainClockIntervalId; 
+
+            function updateCurrentTime() {
                 const now = new Date();
-                setInitialTime(now.getHours(), now.getMinutes());
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                currentTimeDisplay.textContent = `Hora atual: ${hours}:${minutes}:${seconds}`;
 
-                // Referências aos elementos do DOM para a lógica do despertador
-                const setAlarmButton = document.getElementById('setAlarmButton');
-                const statusMessage = document.getElementById('status-message');
-                const currentTimeDisplay = document.getElementById('current-time');
-
-                let alarmSet = false;
-                let alarmHour;
-                let alarmMinute;
-                let intervalId;
-
-                function updateCurrentTime() {
-                    const now = new Date();
-                    const hours = String(now.getHours()).padStart(2, '0');
-                    const minutes = String(now.getMinutes()).padStart(2, '0');
-                    const seconds = String(now.getSeconds()).padStart(2, '0');
-                    currentTimeDisplay.textContent = `Hora atual: ${hours}:${minutes}:${seconds}`;
-
-                    // Lógica para disparar o alarme quando a hora e minuto atuais coincidirem
-                    // e os segundos forem 0.
-                    if (alarmSet && now.getHours() === alarmHour && now.getMinutes() === alarmMinute && now.getSeconds() === 0) {
-                        triggerAlarm();
-                        clearInterval(intervalId); // Para o intervalo após o alarme disparar
-                        alarmSet = false; // Reseta o estado do alarme
-                        statusMessage.textContent = 'Alarme disparado!';
-                        setAlarmButton.textContent = 'Definir Alarme'; // Reverte o texto do botão
-                    }
+                if (alarmSet && now.getHours() === alarmHour && now.getMinutes() === alarmMinute && now.getSeconds() === 0) {
+                    triggerAlarm();
+                    // Não limpe mainClockIntervalId aqui!
+                    alarmSet = false; // Reseta o estado do alarme
+                    statusMessage.textContent = 'Alarme disparado!';
+                    setAlarmButton.textContent = 'Definir Alarme'; // Reverte o texto do botão
                 }
-
-                function setAlarm() {
-                    // Obtém a hora e minuto dos carrosséis usando as funções exportadas
-                    const hour = getSelectedHour();
-                    const minute = getSelectedMinute();
-
-                    alarmHour = hour;
-                    alarmMinute = minute;
-                    alarmSet = true;
-
-                    const formattedAlarmTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-                    statusMessage.textContent = `Alarme definido para ${formattedAlarmTime}`;
-                    setAlarmButton.textContent = 'Alarme Definido (Clique para Cancelar)';
-
-                    // Limpa qualquer intervalo anterior para evitar múltiplos alarmes
-                    if (intervalId) {
-                        clearInterval(intervalId);
-                    }
-                    intervalId = setInterval(updateCurrentTime, 1000); // Inicia a verificação a cada segundo
-
-                    updateCurrentTime(); // Atualiza a hora imediatamente
-                    
-                    // Dispara a notificação de confirmação usando a função do 'alarm-clock.js'
-                    if (typeof showDesktopNotification === 'function') {
-                        showDesktopNotification("⏰ Alarme Definido!", `Seu alarme foi configurado para: ${formattedAlarmTime}`);
-                    } else {
-                        console.error("Função showDesktopNotification não encontrada no alarm-clock.js.");
-                    }
-                }
-
-                function triggerAlarm() {
-                    console.log('Alarme tocando!');
-                    // Dispara a notificação de alarme
-                    if (typeof showDesktopNotification === 'function') {
-                        showDesktopNotification(
-                            "🔔 Despertador!",
-                            "A hora que você definiu chegou: " + String(alarmHour).padStart(2, '0') + ":" + String(alarmMinute).padStart(2, '0')
-                        );
-                    } else {
-                        console.error("Função showDesktopNotification não encontrada.");
-                    }
-
-                    // Toca o som do alarme
-                    const audio = new Audio('https://www.soundjay.com/buttons/beep-07.mp3');
-                    audio.play().catch(e => console.error("Erro ao tocar áudio:", e));
-
-                    // Para o áudio após 5 segundos
-                    setTimeout(() => {
-                        audio.pause();
-                        audio.currentTime = 0;
-                    }, 5000);
-                }
-
-                // Listener para o botão Definir Alarme / Cancelar Alarme
-                setAlarmButton.addEventListener('click', () => {
-                    if (alarmSet) {
-                        clearInterval(intervalId);
-                        alarmSet = false;
-                        statusMessage.textContent = 'Alarme cancelado.';
-                        setAlarmButton.textContent = 'Definir Alarme';
-                    } else {
-                        setAlarm();
-                    }
-                });
-
-                updateCurrentTime(); // Inicia a exibição da hora atual ao carregar a página
-            } else {
-                console.error("Erro: Funções do carrossel de tempo (getSelectedHour, getSelectedMinute, setInitialTime) não foram carregadas corretamente. Verifique o script 'v1_time-carousel-input.js'.");
             }
-        });
-    </script>
+
+            function setAlarm() {
+                const hour = getSelectedHour();
+                const minute = getSelectedMinute();
+
+                alarmHour = hour;
+                alarmMinute = minute;
+                alarmSet = true;
+
+                const formattedAlarmTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+                statusMessage.textContent = `Alarme definido para ${formattedAlarmTime}`;
+                setAlarmButton.textContent = 'Alarme Definido (Clique para Cancelar)';
+                
+                // Nenhuma lógica de clearInterval ou setInterval para o relógio principal aqui.
+                // Ele já está rodando.
+
+                // Dispara a notificação de confirmação usando a função do 'alarm-clock.js'
+                if (typeof showDesktopNotification === 'function') {
+                    showDesktopNotification("⏰ Alarme Definido!", `Seu alarme foi configurado para: ${formattedAlarmTime}`);
+                } else {
+                    console.error("Função showDesktopNotification não encontrada no alarm-clock.js.");
+                }
+            }
+
+            function triggerAlarm() {
+                console.log('Alarme tocando!');
+                if (typeof showDesktopNotification === 'function') {
+                    showDesktopNotification(
+                        "🔔 Despertador!",
+                        "A hora que você definiu chegou: " + String(alarmHour).padStart(2, '0') + ":" + String(alarmMinute).padStart(2, '0')
+                    );
+                } else {
+                    console.error("Função showDesktopNotification não encontrada.");
+                }
+
+                const audio = new Audio('https://www.soundjay.com/buttons/beep-07.mp3');
+                audio.play().catch(e => console.error("Erro ao tocar áudio:", e));
+
+                setTimeout(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }, 5000);
+            }
+
+            // Listener para o botão Definir Alarme / Cancelar Alarme
+            setAlarmButton.addEventListener('click', () => {
+                if (alarmSet) {
+                    // Ao cancelar o alarme, não mexa no intervalo do relógio principal.
+                    alarmSet = false;
+                    statusMessage.textContent = 'Alarme cancelado.';
+                    setAlarmButton.textContent = 'Definir Alarme';
+                } else {
+                    setAlarm(); // Define o alarme, mas não mexe no intervalo do relógio principal
+                }
+            });
+
+            // INICIALIZAÇÃO DO RELÓGIO PRINCIPAL APENAS UMA VEZ
+            // Chama updateCurrentTime imediatamente para exibir a hora
+            updateCurrentTime(); 
+            // Inicia o intervalo para atualizar a hora a cada segundo.
+            // Isso será feito apenas uma vez ao carregar a página.
+            mainClockIntervalId = setInterval(updateCurrentTime, 1000); 
+
+        } else {
+            console.error("Erro: Funções do carrossel de tempo (getSelectedHour, getSelectedMinute, setInitialTime) não foram carregadas corretamente. Verifique o script 'v1_time-carousel-input.js'.");
+        }
+    });
+</script>
 </body>
 </html>
