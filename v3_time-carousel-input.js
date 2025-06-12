@@ -2,22 +2,22 @@
 // Este script gerencia os carrosséis de hora e minuto.
 
 // Variáveis que armazenam a hora e o minuto selecionados
-// Usamos 'let' para que possam ser atualizadas e 'export' para que outros scripts possam acessá-las.
+// Elas se tornarão globais porque o script é carregado sem type="module"
 let currentHour = 0;
 let currentMinute = 0;
 
-// Função para obter a hora selecionada (exportada para uso externo)
-export function getSelectedHour() {
+// Função para obter a hora selecionada (globalmente disponível)
+function getSelectedHour() {
     return currentHour;
 }
 
-// Função para obter o minuto selecionado (exportada para uso externo)
-export function getSelectedMinute() {
+// Função para obter o minuto selecionado (globalmente disponível)
+function getSelectedMinute() {
     return currentMinute;
 }
 
-// Função para definir a hora inicial nos carrosséis (exportada para uso externo)
-export function setInitialTime(hour, minute) {
+// Função para definir a hora inicial nos carrosséis (globalmente disponível)
+function setInitialTime(hour, minute) {
     currentHour = hour;
     currentMinute = minute;
     // Verifica se os elementos do DOM já existem antes de tentar manipulá-los
@@ -28,6 +28,8 @@ export function setInitialTime(hour, minute) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // ... (restante do código do seu v1_time-carousel-input.js permanece o mesmo) ...
+
     // Referências aos elementos do DOM para os carrosséis principais
     const hoursCarousel = document.getElementById('hours-carousel');
     const hoursItems = document.getElementById('hours-items');
@@ -253,5 +255,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Define os valores iniciais com base na hora atual
     const now = new Date();
-    setInitialTime(now.getHours(), now.getMinutes()); // Chamada da função exportada
+    setInitialTime(now.getHours(), now.getMinutes()); // Chamada da função global
 });
