@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor de Área de Tela</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #28a745; /* Verde */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background-color: #218838; /* Verde mais escuro */
+        }
+
+        #status {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #007bff; /* Azul */
+        }
+
+        #last-change {
+            margin-top: 10px;
+            color: #6c757d; /* Cinza */
+            font-size: 0.9em;
+        }
+
+        #change-count {
+            margin-top: 10px;
+            font-size: 1.1em;
+            color: #e74c3c; /* Vermelho */
+            font-weight: bold;
+        }
+
+        #preview-canvas {
+        	 /* display: none; */
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            display: block; /* Para centralizar */
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* O vídeo será invisível, usado apenas para extrair frames */
+        #hidden-video {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Monitor de Área de Tela</h1>
+    <p>Clique em "Iniciar Monitoramento" e selecione a aba, janela ou tela que deseja monitorar.</p>
+    <p>A página detectará mudanças em uma área de 12x12 pixels (definida no código).</p>
+
+    <button id="start-monitor-btn">Iniciar Monitoramento</button>
+    <p id="status">Status: Pronto.</p>
+    <p id="last-change">Última mudança detectada: Nunca</p>
+    <p id="change-count">Contagem de mudanças: 0</p>
+
+    <canvas id="preview-canvas"></canvas>
+    <video id="hidden-video" autoplay muted></video>
+
+    <script>
+        const startMonitorBtn = document.getElementById('start-monitor-btn');
+        const statusDisplay = document.getElementById('status');
+        const lastChangeDisplay = document.getElementById('last-change');
+        const changeCountDisplay = document.getElementById('change-count');
+        const previewCanvas = document.getElementById('preview-canvas');
+        const hiddenVideo = document.getElementById('hidden-video');
+        const ctx = previewCanvas.getContext('2d');
+
+        let mediaStream = null;
+        let monitorInterval = null;
+        let lastImageData = null;
+        let changeCounter = 0;
+        const MAX_CHANGES = 10;
+
+        // --- Configurações da área a monitorar (ajuste conforme necessário) ---
+        // Lembre-se que essas coordenadas são relativas ao canto superior esquerdo
+        // do conteúdo da aba/janela/tela que você selecionar.
+        const MONITOR_AREA_X = 100;
+        const MONITOR_AREA_Y = 100;
+        const MONITOR_AREA_WIDTH = 12;
+        const MONITOR_AREA_HEIGHT = 12;
+        const MONITOR_INTERVAL_MS = 5000;
+        const PIXEL_DIFF_THRESHOLD = 50;
+        
+        
+
+        startMonitorBtn.addEventListener('click', startMonitoring);
+
+        async function startMonitoring() {
+            if (mediaStream) {
+                alert('Já está monitorando. Recarregue a página para parar e reiniciar.');
+                return;
+            }
+
+            try {
+                statusDisplay.textContent = 'Status: Aguardando seleção do usuário...';
+                mediaStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: true
+                });
+
+                hiddenVideo.srcObject = mediaStream;
+                await hiddenVideo.play();
+
+                previewCanvas.width = hiddenVideo.videoWidth;
+                previewCanvas.height = hiddenVideo.videoHeight;
+
+                statusDisplay.textContent = 'Status: Monitorando...';
+                lastChangeDisplay.textContent = 'Última mudança detectada: Nenhuma ainda.';
+                updateChangeCount(0);
+
+                monitorInterval = setInterval(checkAreaForChanges, MONITOR_INTERVAL_MS);
+
+                mediaStream.getVideoTracks()[0].addEventListener('ended', () => {
+                    stopMonitoring();
+                    statusDisplay.textContent = 'Status: Monitoramento encerrado pelo usuário.';
+                    alert('O compartilhamento de tela foi encerrado. Recarregue a página para reiniciar.');
+                });
+
+            } catch (error) {
+                console.error('Erro ao iniciar o monitoramento:', error);
+                statusDisplay.textContent = `Status: Erro - ${error.name}`;
+                stopMonitoring();
+                if (error.name === "NotAllowedError") {
+                    alert("Permissão de tela negada. Por favor, permita a captura de tela para monitorar.");
+                } else {
+                    alert("Não foi possível iniciar o monitoramento. Veja o console para detalhes.");
+                }
+            }
+        }
+
+        function stopMonitoring() {
+            if (monitorInterval) {
+                clearInterval(monitorInterval);
+                monitorInterval = null;
+            }
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+            lastImageData = null;
+            updateChangeCount(0);
+            // Limpa o canvas de preview ao parar
+            ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+        }
+
+        function checkAreaForChanges() {
+        	
+            /*
+            MONITOR_AREA_X = previewCanvas.width - MONITOR_AREA_WIDTH;
+            MONITOR_AREA_Y = 0; // Para o canto superior
+        	*/
+            
+            if (!mediaStream || mediaStream.getVideoTracks().length === 0 || mediaStream.getVideoTracks()[0].readyState !== 'live') {
+                console.warn('Stream não está ativo. Parando monitoramento.');
+                stopMonitoring();
+                statusDisplay.textContent = 'Status: Monitoramento parado (Stream inativo).';
+                return;
+            }
+
+            // Desenha o frame completo no canvas de preview
+            ctx.drawImage(hiddenVideo, 0, 0, previewCanvas.width, previewCanvas.height);
+
+            // --- Desenha o retângulo de destaque sobre a área monitorada ---
+            ctx.strokeStyle = 'red';      // Cor da borda
+            ctx.lineWidth = 2;            // Espessura da borda
+            // Desenha o retângulo na posição e tamanho da área monitorada
+            ctx.strokeRect(MONITOR_AREA_X, MONITOR_AREA_Y, MONITOR_AREA_WIDTH, MONITOR_AREA_HEIGHT);
+            // Opcional: Adicionar um preenchimento semi-transparente para maior visibilidade
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.2)'; // Vermelho semi-transparente
+            ctx.fillRect(MONITOR_AREA_X, MONITOR_AREA_Y, MONITOR_AREA_WIDTH, MONITOR_AREA_HEIGHT);
+            // --- Fim do destaque ---
+
+            try {
+                const currentImageData = ctx.getImageData(MONITOR_AREA_X, MONITOR_AREA_Y, MONITOR_AREA_WIDTH, MONITOR_AREA_HEIGHT);
+
+                if (lastImageData) {
+                    const changed = compareImageData(lastImageData, currentImageData);
+                    if (changed) {
+                        const now = new Date().toLocaleTimeString();
+                        lastChangeDisplay.textContent = `Última mudança detectada: ${now}`;
+                        console.log(`MUDANÇA DETECTADA na área (${MONITOR_AREA_X}, ${MONITOR_AREA_Y}) de ${MONITOR_AREA_WIDTH}x${MONITOR_AREA_HEIGHT} pixels!`);
+                        
+                        incrementChangeCount();
+
+                        // DISPARE SEU EVENTO SIMPLES AQUI!
+                        // Exemplo: window.alert("Mudança na área!");
+                    }
+                }
+                lastImageData = currentImageData;
+
+            } catch (error) {
+                console.error('Erro ao processar imagem para monitoramento:', error);
+                statusDisplay.textContent = `Status: Erro de processamento.`;
+                stopMonitoring();
+            }
+        }
+
+        function compareImageData(imgData1, imgData2) {
+            if (imgData1.data.length !== imgData2.data.length) {
+                return true;
+            }
+
+            for (let i = 0; i < imgData1.data.length; i += 4) {
+                const r1 = imgData1.data[i];
+                const g1 = imgData1.data[i + 1];
+                const b1 = imgData1.data[i + 2];
+
+                const r2 = imgData2.data[i];
+                const g2 = imgData2.data[i + 1];
+                const b2 = imgData2.data[i + 2];
+
+                const diff = Math.sqrt(
+                    Math.pow(r1 - r2, 2) +
+                    Math.pow(g1 - g2, 2) +
+                    Math.pow(b1 - b2, 2)
+                );
+
+                if (diff > PIXEL_DIFF_THRESHOLD) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function incrementChangeCount() {
+            changeCounter++;
+            if (changeCounter >= MAX_CHANGES) {
+                console.log(`Contador de mudanças atingiu ${MAX_CHANGES}. Zerando!`);
+                changeCounter = 0;
+                // DISPARE SEU EVENTO DE ZERAR AQUI!
+                // Exemplo: alert("Contador zerado!");
+            }
+            updateChangeCount(changeCounter);
+        }
+
+        function updateChangeCount(count) {
+            changeCountDisplay.textContent = `Contagem de mudanças: ${count}`;
+        }
+    </script>
+</body>
+</html>
